@@ -12,6 +12,14 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 - **Zotero & Better BibTeX**: `./scripts/setup_zotero.sh` (installs if missing, downloads addon, prints GUI install/config steps; auto-creates collection matching repo name).
 - **Bib Sync**: Edit `./scripts/zotero_collection_sync.sh` if needed (e.g., adjust interval), then run it (daemon syncs to `bib/`).
 
+To make the scripts executable and run the installation:
+
+```bash
+chmod +x scripts/*.sh
+./scripts/setup.sh
+./scripts/setup_zotero.sh
+```
+
 ## Workflow
 Import papers, LessWrong posts, or Alignment Forum articles into your Zotero collection effortlessly.
 
@@ -20,6 +28,12 @@ In `content/*/notes.md`, freely jot down your authentic ideas and thoughts. When
 This setup is optimized for AI assistance: Keep `notes.md` as your personal space for raw, genuine content. Let AI transform it into polished `content/*/chapter.tex` files, handling structure and flow . For fine-grained control, edit the LaTeX directly.
 
 The repo auto-syncs with your Zotero collection via `scripts/zotero_collection_sync.sh`, extracting Markdown from sources into `bib/` folders. AI can verify claims by accessing these extracts.
+
+Run the sync script in the background while you work on the paper:
+
+```bash
+./scripts/zotero_collection_sync.sh &
+```
 
 AI assistants are pre-configured with this structure, workflow, and rules via `.cursor/rules/` in the repo.
 
