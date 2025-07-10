@@ -1,0 +1,13 @@
+
+# Ignore everything in output folder except main.pdf
+output/
+!output/main.pdf
+
+# Ignore all PDF files in bib folder
+bib/**/*.pdf
+
+# Ignore HTML snapshots
+bib/**/*.html
+
+# Ignore Zotero sync log
+bib/.sync_log.txt

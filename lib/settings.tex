@@ -1,0 +1,54 @@
+% Standard academic paper formatting
+\usepackage{geometry}
+
+% Standard page geometry
+\geometry{
+    a4paper,
+    margin=1in,
+    top=1in,
+    bottom=1in
+}
+
+% Standard paragraph formatting
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{1.5em}
+
+% Line spacing
+\onehalfspacing
+
+% Standard page numbering (will be set in main document)
+\pagenumbering{arabic}
+
+% Custom formatting
+\setlength{\textfloatsep}{1em}
+\setlength{\intextsep}{1em}
+
+% Bibliography customizations
+\AtEveryBibitem{%
+  \clearfield{note}%
+  \clearfield{pagetotal}%
+  \clearfield{pages}%
+  \clearfield{isbn}%
+  \clearfield{issn}%
+  \clearfield{archivePrefix}%
+  \clearfield{eprint}%
+  \clearfield{primaryClass}%
+  \clearname{editor}%
+  \clearfield{urldate}%
+}
+
+% Custom citation format: [FirstAuthor Year]
+\DeclareFieldFormat{citehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}%
+  \bibhyperref{#1}}
+
+% Redefine the cite command to use square brackets
+\DeclareCiteCommand{\cite}[\mkbibparens]
+  {\usebibmacro{prenote}}
+  {\usebibmacro{citeindex}%
+   \printtext[citehyperref]{\usebibmacro{cite}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+% Change parentheses to square brackets
+\renewcommand{\mkbibparens}[1]{\mkbibbrackets{#1}}

@@ -1,0 +1,55 @@
+\documentclass[12pt,a4paper]{article}
+
+% Import packages and settings from lib
+\input{lib/packages}
+\input{lib/settings}
+
+% Add bibliography resource
+\addbibresource{bib/refs.bib}
+
+% Document metadata
+\title{Your Paper Title Here}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+
+% Title page
+\maketitle
+\thispagestyle{empty}
+
+% Abstract
+\begin{abstract}
+\input{content/01_abstract/chapter}
+\end{abstract}
+
+\newpage
+\setcounter{page}{1}
+
+% Content sections
+\section{Introduction}
+\input{content/02_introduction/chapter}
+
+\section{Methods}
+\input{content/03_methods/chapter}
+
+\section{Results}
+\input{content/04_results/chapter}
+
+\section{Conclusion}
+\input{content/05_conclusion/chapter}
+
+\section{Discussion}
+\input{content/06_discussion/chapter}
+
+% Bibliography
+\newpage
+\printbibliography[title=References]
+
+% Appendix
+\newpage
+\appendix
+\section{Appendix}
+\input{content/07_appendix/chapter}
+
+\end{document} 
