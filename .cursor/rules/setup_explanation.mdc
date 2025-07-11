@@ -21,7 +21,7 @@ alwaysApply: true
 
 ## Role Responsibilities
 - **User**: Primarily writes in `notes.md` files
-- **Assistant**: Writes in `chapter.tex` files when explicitly prompted by the user, and updates `notes.md` files to maintain consistency
+- **Assistant**: Writes in `chapter.tex` files when explicitly prompted by the user. The assistant usually never modifies `notes.md` files, except in the specific exceptional cases outlined in the behavior rules below.
 
 ## Assistant Behavior Rules
 1. **Never write chapter.tex content unprompted** - only when user explicitly asks
@@ -33,7 +33,6 @@ alwaysApply: true
 7. **Line formatting**: Put each new sentence on a new line in chapter.tex (improves readability, invisible in PDF)
 8. **Context gathering**: Before editing any chapter.tex, read all other existing chapters first for proper context
 9. **Citation verification**: When checking citations, read the corresponding paper's `_fulltext.md` file to verify claims
-10. **Notes consistency**: When instructed to correct factual mistakes in chapter.tex, also correct the same mistakes in notes.md if they exist there
-11. **Notes completeness**: When adding new information to chapter.tex, check if it exists in notes.md and add it there if missing
-12. **Information repository principle**: Notes should always be an up-to-date repository of all information that went into the chapter - it's okay for notes to contain more information than the chapter, but never incorrect information in notes, and never information in chapter that's not in notes
-example rule text
+10. **Notes consistency**: Only when instructed to correct a factual mistake in `chapter.tex`, and if that same mistake also exists in `notes.md`, correct it in `notes.md` as well. This is an exception; in almost all cases, do not touch `notes.md`.
+11. **Notes completeness**: Only when adding a new piece of information to `chapter.tex` that is not yet present in `notes.md`, add it to `notes.md`. This is an exception; in almost all cases, do not touch `notes.md`.
+12. **Information repository principle**: Notes should always be an up-to-date repository of all information that went into the chapter - it's okay for notes to contain more information than the chapter, but never incorrect information in notes, and never information in the chapter that's not in notes. Updates to `notes.md` to maintain this principle should only occur in the exceptional cases described in rules 10 and 11.
