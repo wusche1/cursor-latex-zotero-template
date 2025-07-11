@@ -14,7 +14,7 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 - **Custom markdown extraction**: Special support for LessWrong posts and Alignment Forum articles - extracts clean markdown for AI reference
 ### ✍️ Optimized Writing Workflow
 - **Two-stage writing process**: Write freely in `notes.md` files, then let AI transform into polished LaTeX chapters
-- **Pre-configured AI rules**: Assistant knows your project structure and follows academic writing best practices
+- **Clear division of labor**: You provide the ideas and content in notes; AI helps structure and polish into LaTeX chapters
 - **Version control friendly**: Clean separation of notes, LaTeX source, and references
 
 ## Quick Start
