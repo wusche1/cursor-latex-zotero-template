@@ -1,6 +1,21 @@
 # Cursor + LaTeX + Zotero: Academic Writing Template with AI Assistance
 
-This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writing. It's ideal for researchers, students, or anyone producing scholarly content, with seamless bibliography sync and AI-optimized workflow. Repo name = paper name = Zotero collection.
+This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writing with AI-powered research assistance.
+
+## Core Features
+
+### 🤖 AI Assistant with Full Paper Access
+- **Your AI assistant can read all your cited papers**: The sync script automatically extracts markdown versions of all papers in your Zotero collection
+- **Fact-checking and verification**: AI can verify claims against the actual paper content, suggest relevant quotes, and ensure citation accuracy
+- **Smart citation suggestions**: Type '@' in your notes for intelligent reference suggestions from your project-specific bibliography
+
+### 📚 Seamless Zotero Integration
+- **Auto-sync bibliography**: Papers added to your Zotero collection automatically sync to your project
+- **Custom markdown extraction**: Special support for LessWrong posts and Alignment Forum articles - extracts clean markdown for AI reference
+### ✍️ Optimized Writing Workflow
+- **Two-stage writing process**: Write freely in `notes.md` files, then let AI transform into polished LaTeX chapters
+- **Pre-configured AI rules**: Assistant knows your project structure and follows academic writing best practices
+- **Version control friendly**: Clean separation of notes, LaTeX source, and references
 
 ## Quick Start
 1. On GitHub, use this as a template: Click 'Use this template' > Name your repo (e.g., 'my-paper-title') > Create.
@@ -26,16 +41,14 @@ chmod +x scripts/*.sh
 ./scripts/setup_zotero.sh
 ```
 
-## Workflow
-Import papers, LessWrong posts, or Alignment Forum articles into your Zotero collection effortlessly.
+## How It Works
 
-In `content/*/notes.md`, freely jot down your authentic ideas and thoughts. When citing, type '@' for intelligent suggestions from your project-specific Zotero references.
+1. **Write naturally**: Draft your ideas in `content/*/notes.md` files
+2. **Add references**: Import papers to Zotero; they auto-sync to your project
+3. **Let AI help**: Ask the assistant to transform notes into polished LaTeX chapters
+4. **Verify accuracy**: AI can check citations against the actual paper content
 
-This setup is optimized for AI assistance: Keep `notes.md` as your personal space for raw, genuine content. Let AI transform it into polished `content/*/chapter.tex` files, handling structure and flow . For fine-grained control, edit the LaTeX directly.
-
-The repo auto-syncs with your Zotero collection via `scripts/zotero_collection_sync.sh`, extracting Markdown from sources into `bib/` folders. AI can verify claims by accessing these extracts.
-
-Run the sync script in the background while you work on the paper:
+Run the sync script in the background while writing:
 
 ```bash
 ./scripts/zotero_collection_sync.sh &
