@@ -56,6 +56,10 @@ Run the sync script in the background while writing:
 
 AI assistants are pre-configured with this structure, workflow, and rules via `.cursor/rules/` in the repo.
 
+## Feedback
+
+We'd love to hear about your experience with this template! Please share any feedback, suggestions, or issues through our [feedback form](https://docs.google.com/forms/d/e/1FAIpQLSdBpFHVVR9a93MyGgg1wfH7u3CwEq58SfGXMzxy0N96AngMww/viewform?usp=dialog).
+
 ## Notes
 - Assumes macOS. For other OS, adapt manually.
 - Rules: See `.cursor/rules/` for assistant behavior.
