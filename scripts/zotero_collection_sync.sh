@@ -236,19 +236,24 @@ EOF
                             # Extract JSON-LD structured data and convert to markdown using Perl
                             if perl -0777 -ne 'print $1 if /<script type=application\/ld\+json>(.*?)<\/script>/s' "$html_file" | jq -r '.text' >/dev/null 2>&1; then
                                 # Extract JSON-LD text content using Perl multiline regex (exact method from user)
+                                log_message "    Using JSON-LD extraction with pandoc for ${folder_name}"
                                 perl -0777 -ne 'print $1 if /<script type=application\/ld\+json>(.*?)<\/script>/s' "$html_file" | \
                                     jq -r '.text' | \
                                     pandoc -f html -t markdown >> "$text_dest" 2>/dev/null
                             else
                                 # Regular HTML to markdown conversion
+                                log_message "    Using pandoc HTML to markdown conversion for ${folder_name}"
                                 pandoc -f html -t markdown "$html_file" >> "$text_dest" 2>/dev/null
                             fi
                         elif command -v lynx >/dev/null 2>&1; then
+                            log_message "    Using lynx for HTML extraction for ${folder_name}"
                             lynx -dump -nolist "$html_file" >> "$text_dest" 2>/dev/null
                         elif command -v w3m >/dev/null 2>&1; then
+                            log_message "    Using w3m for HTML extraction for ${folder_name}"
                             w3m -dump "$html_file" >> "$text_dest" 2>/dev/null
                         else
                             # Fallback: basic HTML stripping
+                            log_message "    Using basic sed HTML stripping (fallback) for ${folder_name}"
                             sed 's/<[^>]*>//g' "$html_file" | sed 's/&nbsp;/ /g' | sed 's/&lt;/</g' | sed 's/&gt;/>/g' | sed 's/&amp;/\&/g' >> "$text_dest"
                         fi
                         
