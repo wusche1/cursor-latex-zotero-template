@@ -24,6 +24,8 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 2. Clone your new repo: `git clone your-repo-url` (folder will match paper name).
 3. Run setup scripts (macOS and Windows supported; assumes Cursor installed).
 
+💡 **See the example paper**: Check out the `example-paper` branch to see a complete example of how to use this template with sample content, references, and LaTeX chapters.
+
 ## Setup
 
 ### macOS
