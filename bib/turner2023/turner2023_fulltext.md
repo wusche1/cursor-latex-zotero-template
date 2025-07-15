@@ -1,6 +1,6 @@
 # Full Text: turner2023
 
-Extracted: 2025-07-15 13:22:01
+Extracted: 2025-07-15 13:23:35
 Source: PDF
 ---
 

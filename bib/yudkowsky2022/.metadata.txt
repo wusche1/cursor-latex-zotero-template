@@ -1,7 +1,0 @@
-Title: AGI Ruin: A List of Lethalities
-Author: Yudkowsky
-Year: 2022
-Type: journalArticle
-Citation Key: yudkowsky2022
-Zotero Key: XCCKWDBN
-URL: https://www.lesswrong.com/posts/uMQ3cqWDPHhjtiesc/agi-ruin-a-list-of-lethalities

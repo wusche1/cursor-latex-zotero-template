@@ -3,8 +3,8 @@
 Title: The True Prisoner's Dilemma
 Author: Eliezer Yudkowsky
 Date: 2008-09-03T21:34:28.000Z
-Extracted: 2025-07-15 13:22:02
-Source: HTML Snapshot (LessWrong)
+Extracted: 2025-07-15 13:23:35
+Source: HTML Snapshot (LessWrong JSON-LD)
 ---
 
 It occurred to me one day that the standard visualization of the [Prisoner's Dilemma](http://en.wikipedia.org/wiki/Prisoner%27s_dilemma) is fake.
