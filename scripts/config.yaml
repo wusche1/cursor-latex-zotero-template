@@ -1,0 +1,23 @@
+# Zotero Sync Configuration
+
+# Collection name - defaults to the project folder name if not specified
+# collection_name: "my-collection"
+
+# Output directory for synced files
+output_dir: "bib"
+
+# Zotero data directory
+zotero_data_dir: "~/Zotero"
+
+# Check interval in seconds (for daemon mode)
+check_interval: 300
+
+# Text extraction settings
+extraction:
+  # Maximum file size for text extraction (in MB)
+  max_file_size: 100
+  
+  # HTML extraction settings
+  html:
+    # Prefer JSON-LD extraction for LessWrong/AF articles
+    prefer_json_ld: true 
