@@ -10,7 +10,12 @@ output_dir: "bib"
 zotero_data_dir: "~/Zotero"
 
 # Check interval in seconds (for daemon mode)
-check_interval: 300
+check_interval: 30
+
+# Label extraction settings
+label_extraction:
+  # Output file for extracted labels
+  output_file: "bib/labels.bib"
 
 # Text extraction settings
 extraction:
@@ -19,5 +24,10 @@ extraction:
   
   # HTML extraction settings
   html:
-    # Prefer JSON-LD extraction for LessWrong/AF articles
-    prefer_json_ld: true 
+    # Remove base64-encoded images from extracted text (reduces clutter)
+    remove_base64_images: true
+    # Websites that should use LessWrong-style extraction (JSON-LD first, then specific selectors)
+    # Add any domain that uses similar structured data formats
+    lesswrong_sites:
+      - "lesswrong.com"
+      - "alignmentforum.org" 

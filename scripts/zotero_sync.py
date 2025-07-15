@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any
@@ -51,36 +52,92 @@ Source: PDF
 {text}"""
 
 
-def extract_html_text(file_path: Path, folder_name: str, prefer_json_ld: bool = True) -> str:
-    """Extract text from HTML file with special handling for LessWrong/AF"""
+def extract_html_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
+    """General HTML text extraction"""
     with open(file_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
     
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    # Try JSON-LD extraction first for LessWrong/AF articles
-    if prefer_json_ld:
-        json_ld_scripts = soup.find_all('script', type='application/ld+json')
-        for script in json_ld_scripts:
-            data = json.loads(script.string)
-            if isinstance(data, dict) and 'text' in data:
-                text_soup = BeautifulSoup(data['text'], 'html.parser')
-                return f"""# Full Text: {folder_name}
-
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: HTML Snapshot (JSON-LD)
----
-
-{md(str(text_soup))}"""
-    
     # Regular HTML to markdown conversion
+    markdown_content = md(str(soup))
+    
+    # Remove base64-encoded images if configured
+    if remove_base64_images:
+        markdown_content = _remove_base64_images(markdown_content)
+    
     return f"""# Full Text: {folder_name}
 
 Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 Source: HTML Snapshot
 ---
 
-{md(str(soup))}"""
+{markdown_content}"""
+
+
+def _remove_base64_images(markdown_content: str) -> str:
+    """Remove base64-encoded images from markdown content"""
+    # Pattern to match markdown images with data: URIs
+    # Matches: ![alt text](data:image/type;base64,...)
+    base64_image_pattern = r'!\[([^\]]*)\]\(data:image/[^;]+;base64,[^)]+\)'
+    
+    # Replace base64 images with placeholder or remove entirely
+    # Option 1: Replace with placeholder showing alt text
+    def replace_with_placeholder(match):
+        alt_text = match.group(1)
+        if alt_text:
+            return f"[Image: {alt_text}]"
+        else:
+            return "[Image]"
+    
+    # Option 2: Remove entirely (uncomment this line and comment above to use)
+    # return re.sub(base64_image_pattern, '', markdown_content)
+    
+    return re.sub(base64_image_pattern, replace_with_placeholder, markdown_content)
+
+
+def extract_lesswrong_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
+    """Extract text from LessWrong-style HTML files (JSON-LD first, then specific selectors)"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Try JSON-LD first
+    json_ld_scripts = soup.find_all('script', type='application/ld+json')
+    for script in json_ld_scripts:
+        try:
+            data = json.loads(script.string)
+            if isinstance(data, dict) and 'text' in data:
+                text_soup = BeautifulSoup(data['text'], 'html.parser')
+                title = data.get('headline', folder_name)
+                author_data = data.get('author', 'Unknown')
+                if isinstance(author_data, list) and author_data:
+                    author = author_data[0].get('name', 'Unknown') if isinstance(author_data[0], dict) else 'Unknown'
+                elif isinstance(author_data, dict):
+                    author = author_data.get('name', 'Unknown')
+                else:
+                    author = 'Unknown'
+                date = data.get('datePublished', datetime.now().strftime("%Y-%m-%d"))
+                markdown_content = md(str(text_soup))
+                
+                # Remove base64-encoded images if configured
+                if remove_base64_images:
+                    markdown_content = _remove_base64_images(markdown_content)
+                
+                return f"""# Full Text: {folder_name}
+
+Title: {title}
+Author: {author}
+Date: {date}
+Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Source: HTML Snapshot (LessWrong JSON-LD)
+---
+
+{markdown_content}"""
+        except Exception as e:
+            print(f"Error extracting LessWrong text: {e}")
+            return extract_html_text(file_path, folder_name, remove_base64_images)
 
 
 class ZoteroDatabase:
@@ -219,15 +276,20 @@ class ZoteroDatabase:
 class ZoteroSync:
     """Main class for syncing Zotero collections"""
     
-    def __init__(self, config_path: Path):
-        with open(config_path, 'r') as f:
-            self.config = yaml.safe_load(f)
+    def __init__(self, config):
+        # Accept either a config dict or a file path
+        if isinstance(config, dict):
+            self.config = config
+        else:
+            with open(config, 'r') as f:
+                self.config = yaml.safe_load(f)
         
         # Convert paths
         self.output_dir = Path(self.config['output_dir'])
         self.zotero_data_dir = Path(self.config['zotero_data_dir']).expanduser()
         self.collection_name = self.config.get('collection_name') or Path.cwd().name
-        self.prefer_json_ld = self.config['extraction']['html']['prefer_json_ld']
+        self.remove_base64_images = self.config['extraction']['html']['remove_base64_images']
+        self.lesswrong_sites = self.config['extraction']['html']['lesswrong_sites']
         
         self.output_dir.mkdir(exist_ok=True)
         self.db = ZoteroDatabase(self.zotero_data_dir)
@@ -293,8 +355,12 @@ class ZoteroSync:
         pdf_dest = item_dir / f'{item.citation_key}.pdf'
         text_dest = item_dir / f'{item.citation_key}_fulltext.md'
         
-        # Copy PDF
+        # Skip if both artifacts already exist
+        if pdf_dest.exists() and text_dest.exists():
+            print(f'  Skipping PDF (already exists): {item.citation_key}.pdf')
+            return True
         
+        # Copy PDF
         shutil.copy(pdf_file, pdf_dest)
         print(f'  Copied PDF: {item.citation_key}.pdf')
         
@@ -315,15 +381,25 @@ class ZoteroSync:
         html_dest = item_dir / f'{item.citation_key}.html'
         text_dest = item_dir / f'{item.citation_key}_fulltext.md'
         
+        # Skip if both artifacts already exist
+        if html_dest.exists() and text_dest.exists():
+            print(f'  Skipping HTML (already exists): {item.citation_key}.html')
+            return True
+        
         # Copy HTML
         import shutil
         shutil.copy(html_file, html_dest)
         print(f'  Copied HTML: {item.citation_key}.html')
         
-        # Extract text
-        text = extract_html_text(html_file, item.citation_key, self.prefer_json_ld)
+        # Extract text - use LessWrong parser for configured sites
+        if item.url and any(site in item.url for site in self.lesswrong_sites):
+            text = extract_lesswrong_text(html_file, item.citation_key, self.remove_base64_images)
+            print(f'  Extracted LessWrong content: {item.citation_key}_fulltext.md')
+        else:
+            text = extract_html_text(html_file, item.citation_key, self.remove_base64_images)
+            print(f'  Extracted and converted HTML to markdown: {item.citation_key}_fulltext.md')
+        
         text_dest.write_text(text)
-        print(f'  Extracted and converted HTML to markdown: {item.citation_key}_fulltext.md')
         
         return True
     
@@ -354,25 +430,22 @@ class ZoteroSync:
         
         return None
     
-    def run_daemon(self):
-        """Run the sync in daemon mode"""
-        print(f'=== Zotero Collection Sync Started ===')
-        print(f'Collection: {self.collection_name}')
-        print(f'Output: {self.output_dir}')
-        print(f'Check interval: {self.config["check_interval"]} seconds')
-        
-        self.sync_collection()
-        
-        while True:
-            time.sleep(self.config['check_interval'])
-            self.sync_collection()
+def sync_zotero(config: dict):
+    """Run a single Zotero sync with the given configuration"""
+    # Create a temporary config file in memory for ZoteroSync
+    # (since it expects a file path, we'll modify the class to accept config dict)
+    syncer = ZoteroSync(config)
+    syncer.sync_collection()
 
 
 def main():
-    """Main entry point"""
+    """Main entry point for standalone testing"""
     config_path = Path(__file__).parent / 'config.yaml'
-    syncer = ZoteroSync(config_path)
-    syncer.run_daemon()
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    print(f'=== Zotero Collection Sync (Standalone) ===')
+    sync_zotero(config)
 
 
 if __name__ == '__main__':

@@ -67,5 +67,5 @@
         "comments": true,
         "strings": true
     },
-    "PandocCiter.DefaultBib": "bib/refs.bib"
+    "PandocCiter.DefaultBib": "bib/labels.bib"
 } 
