@@ -24,6 +24,8 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 2. Clone your new repo: `git clone your-repo-url` (folder will match paper name).
 3. Run setups (macOS only; assumes Cursor installed).
 
+💡 **See the example paper**: Check out the `example-paper` branch to see a complete example of how to use this template with sample content, references, and LaTeX chapters.
+
 ## Setup
 - **Dependencies**: `./scripts/setup.sh` (installs Homebrew if needed, MacTeX, Python via uv, etc.; confirm large downloads).
 - **Zotero & Better BibTeX**: `./scripts/setup_zotero.sh` (installs if missing, downloads addon, prints GUI install/config steps; auto-creates collection matching repo name). After running the script, you'll need to manually complete the Better BibTeX setup:
