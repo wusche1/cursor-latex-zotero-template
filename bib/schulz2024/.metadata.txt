@@ -1,0 +1,7 @@
+Title: A short 'derivation' of Watanabe's Free Energy Formula
+Author: Schulz
+Year: 2024
+Type: journalArticle
+Citation Key: schulz2024
+Zotero Key: K3FA6SKR
+URL: https://www.lesswrong.com/posts/ry9ch69xY7PkCS8td/a-short-derivation-of-watanabe-s-free-energy-formula

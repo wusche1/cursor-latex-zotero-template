@@ -1,0 +1,7 @@
+Title: Optimal Policies Tend to Seek Power
+Author: Turner
+Year: 2023
+Type: preprint
+Citation Key: turner2023
+Zotero Key: G9KUQBHK
+URL: http://arxiv.org/abs/1912.01683

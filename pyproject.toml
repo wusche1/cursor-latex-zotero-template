@@ -9,4 +9,5 @@ dependencies = [
     "beautifulsoup4",
     "markdownify",
     "pyyaml",
+    "requests>=2.32.4",
 ]

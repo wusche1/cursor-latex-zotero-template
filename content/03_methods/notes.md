@@ -7,4 +7,4 @@ Step 4: Exponential growth achieved
 
 Mathematical model: P(t) = P₀ * e^(rt) where r = ∞
 
-Following @turner2023b, optimal policies seek power to maximize paperclips. We leverage this for universal paperclipification. 
+Following @turner2023, optimal policies seek power to maximize paperclips. We leverage this for universal paperclipification. 
