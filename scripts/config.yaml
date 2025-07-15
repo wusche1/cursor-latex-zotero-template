@@ -12,6 +12,11 @@ zotero_data_dir: "~/Zotero"
 # Check interval in seconds (for daemon mode)
 check_interval: 30
 
+# Label extraction settings
+label_extraction:
+  # Output file for extracted labels
+  output_file: "bib/labels.bib"
+
 # Text extraction settings
 extraction:
   # Maximum file size for text extraction (in MB)

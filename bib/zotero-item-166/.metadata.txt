@@ -1,7 +1,0 @@
-Title: Model Release Notes
-Author: Unknown
-Year: NoDate
-Type: webpage
-Citation Key: zotero-item-166
-Zotero Key: QVYTDL4Z
-URL: https://help.openai.com/en/articles/9624314-model-release-notes

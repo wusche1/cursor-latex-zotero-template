@@ -276,9 +276,13 @@ class ZoteroDatabase:
 class ZoteroSync:
     """Main class for syncing Zotero collections"""
     
-    def __init__(self, config_path: Path):
-        with open(config_path, 'r') as f:
-            self.config = yaml.safe_load(f)
+    def __init__(self, config):
+        # Accept either a config dict or a file path
+        if isinstance(config, dict):
+            self.config = config
+        else:
+            with open(config, 'r') as f:
+                self.config = yaml.safe_load(f)
         
         # Convert paths
         self.output_dir = Path(self.config['output_dir'])
@@ -426,25 +430,22 @@ class ZoteroSync:
         
         return None
     
-    def run_daemon(self):
-        """Run the sync in daemon mode"""
-        print(f'=== Zotero Collection Sync Started ===')
-        print(f'Collection: {self.collection_name}')
-        print(f'Output: {self.output_dir}')
-        print(f'Check interval: {self.config["check_interval"]} seconds')
-        
-        self.sync_collection()
-        
-        while True:
-            time.sleep(self.config['check_interval'])
-            self.sync_collection()
+def sync_zotero(config: dict):
+    """Run a single Zotero sync with the given configuration"""
+    # Create a temporary config file in memory for ZoteroSync
+    # (since it expects a file path, we'll modify the class to accept config dict)
+    syncer = ZoteroSync(config)
+    syncer.sync_collection()
 
 
 def main():
-    """Main entry point"""
+    """Main entry point for standalone testing"""
     config_path = Path(__file__).parent / 'config.yaml'
-    syncer = ZoteroSync(config_path)
-    syncer.run_daemon()
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    print(f'=== Zotero Collection Sync (Standalone) ===')
+    sync_zotero(config)
 
 
 if __name__ == '__main__':
