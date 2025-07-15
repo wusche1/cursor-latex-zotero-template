@@ -11,3 +11,7 @@ bib/**/*.html
 
 # Ignore Zotero sync log
 bib/.sync_log.txt
+
+
+# Ignore python env
+.venv/
