@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any
@@ -51,7 +52,7 @@ Source: PDF
 {text}"""
 
 
-def extract_html_text(file_path: Path, folder_name: str, prefer_json_ld: bool = True) -> str:
+def extract_html_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
     """General HTML text extraction"""
     with open(file_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
@@ -59,17 +60,44 @@ def extract_html_text(file_path: Path, folder_name: str, prefer_json_ld: bool = 
     soup = BeautifulSoup(html_content, 'html.parser')
     
     # Regular HTML to markdown conversion
+    markdown_content = md(str(soup))
+    
+    # Remove base64-encoded images if configured
+    if remove_base64_images:
+        markdown_content = _remove_base64_images(markdown_content)
+    
     return f"""# Full Text: {folder_name}
 
 Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 Source: HTML Snapshot
 ---
 
-{md(str(soup))}"""
+{markdown_content}"""
 
 
-def extract_lesswrong_text(file_path: Path, folder_name: str) -> str:
-    """Extract text from LessWrong HTML files"""
+def _remove_base64_images(markdown_content: str) -> str:
+    """Remove base64-encoded images from markdown content"""
+    # Pattern to match markdown images with data: URIs
+    # Matches: ![alt text](data:image/type;base64,...)
+    base64_image_pattern = r'!\[([^\]]*)\]\(data:image/[^;]+;base64,[^)]+\)'
+    
+    # Replace base64 images with placeholder or remove entirely
+    # Option 1: Replace with placeholder showing alt text
+    def replace_with_placeholder(match):
+        alt_text = match.group(1)
+        if alt_text:
+            return f"[Image: {alt_text}]"
+        else:
+            return "[Image]"
+    
+    # Option 2: Remove entirely (uncomment this line and comment above to use)
+    # return re.sub(base64_image_pattern, '', markdown_content)
+    
+    return re.sub(base64_image_pattern, replace_with_placeholder, markdown_content)
+
+
+def extract_lesswrong_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
+    """Extract text from LessWrong-style HTML files (JSON-LD first, then specific selectors)"""
     with open(file_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
     
@@ -91,6 +119,12 @@ def extract_lesswrong_text(file_path: Path, folder_name: str) -> str:
                 else:
                     author = 'Unknown'
                 date = data.get('datePublished', datetime.now().strftime("%Y-%m-%d"))
+                markdown_content = md(str(text_soup))
+                
+                # Remove base64-encoded images if configured
+                if remove_base64_images:
+                    markdown_content = _remove_base64_images(markdown_content)
+                
                 return f"""# Full Text: {folder_name}
 
 Title: {title}
@@ -100,60 +134,10 @@ Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 Source: HTML Snapshot (LessWrong JSON-LD)
 ---
 
-{md(str(text_soup))}"""
-        except (json.JSONDecodeError, KeyError):
-            continue
-    
-    # Fallback to HTML scraping
-    print(f"  LessWrong JSON-LD extraction failed for {folder_name}, attempting HTML fallback")
-    post_content = soup.select_one('.PostsPage-postContent')
-    if post_content:
-        # Extract title
-        title_el = soup.select_one('.PostsPageTitle-root')
-        title = title_el.get_text(strip=True) if title_el else folder_name
-        
-        # Try multiple author selectors
-        author_selectors = [
-            '.UsersNameDisplay-userName',
-            '.PostsAuthors-author',
-            '.UsersNameDisplay-displayName',
-            '[itemprop="author"]'
-        ]
-        author = 'Unknown'
-        for selector in author_selectors:
-            author_el = soup.select_one(selector)
-            if author_el:
-                author = author_el.get_text(strip=True)
-                break
-        
-        # Extract date
-        date_selectors = [
-            'time',
-            '[itemprop="datePublished"]',
-            '.PostsPageDate-date'
-        ]
-        date = datetime.now().strftime("%Y-%m-%d")
-        for selector in date_selectors:
-            date_el = soup.select_one(selector)
-            if date_el:
-                date = date_el.get('datetime') or date_el.get_text(strip=True)
-                break
-        
-        markdown_text = md(str(post_content))
-        return f"""# Full Text: {folder_name}
-
-Title: {title}
-Author: {author}
-Date: {date}
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: HTML Snapshot (LessWrong Fallback)
----
-
-{markdown_text}"""
-    
-    # If both fail, fall back to general HTML
-    print(f"  LessWrong HTML fallback also failed for {folder_name}, using general extraction")
-    return extract_html_text(file_path, folder_name)
+{markdown_content}"""
+        except Exception as e:
+            print(f"Error extracting LessWrong text: {e}")
+            return extract_html_text(file_path, folder_name, remove_base64_images)
 
 
 class ZoteroDatabase:
@@ -300,7 +284,8 @@ class ZoteroSync:
         self.output_dir = Path(self.config['output_dir'])
         self.zotero_data_dir = Path(self.config['zotero_data_dir']).expanduser()
         self.collection_name = self.config.get('collection_name') or Path.cwd().name
-        self.prefer_json_ld = self.config['extraction']['html']['prefer_json_ld']
+        self.remove_base64_images = self.config['extraction']['html']['remove_base64_images']
+        self.lesswrong_sites = self.config['extraction']['html']['lesswrong_sites']
         
         self.output_dir.mkdir(exist_ok=True)
         self.db = ZoteroDatabase(self.zotero_data_dir)
@@ -366,8 +351,12 @@ class ZoteroSync:
         pdf_dest = item_dir / f'{item.citation_key}.pdf'
         text_dest = item_dir / f'{item.citation_key}_fulltext.md'
         
-        # Copy PDF
+        # Skip if both artifacts already exist
+        if pdf_dest.exists() and text_dest.exists():
+            print(f'  Skipping PDF (already exists): {item.citation_key}.pdf')
+            return True
         
+        # Copy PDF
         shutil.copy(pdf_file, pdf_dest)
         print(f'  Copied PDF: {item.citation_key}.pdf')
         
@@ -388,17 +377,22 @@ class ZoteroSync:
         html_dest = item_dir / f'{item.citation_key}.html'
         text_dest = item_dir / f'{item.citation_key}_fulltext.md'
         
+        # Skip if both artifacts already exist
+        if html_dest.exists() and text_dest.exists():
+            print(f'  Skipping HTML (already exists): {item.citation_key}.html')
+            return True
+        
         # Copy HTML
         import shutil
         shutil.copy(html_file, html_dest)
         print(f'  Copied HTML: {item.citation_key}.html')
         
-        # Extract text - use LessWrong parser for LessWrong URLs
-        if item.url and ('lesswrong.com' in item.url or 'alignmentforum.org' in item.url):
-            text = extract_lesswrong_text(html_file, item.citation_key)
+        # Extract text - use LessWrong parser for configured sites
+        if item.url and any(site in item.url for site in self.lesswrong_sites):
+            text = extract_lesswrong_text(html_file, item.citation_key, self.remove_base64_images)
             print(f'  Extracted LessWrong content: {item.citation_key}_fulltext.md')
         else:
-            text = extract_html_text(html_file, item.citation_key, self.prefer_json_ld)
+            text = extract_html_text(html_file, item.citation_key, self.remove_base64_images)
             print(f'  Extracted and converted HTML to markdown: {item.citation_key}_fulltext.md')
         
         text_dest.write_text(text)

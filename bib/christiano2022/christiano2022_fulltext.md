@@ -3,7 +3,7 @@
 Title: Where I agree and disagree with Eliezer
 Author: paulfchristiano
 Date: 2022-06-19T19:15:55.698Z
-Extracted: 2025-07-15 13:23:35
+Extracted: 2025-07-15 13:55:00
 Source: HTML Snapshot (LessWrong JSON-LD)
 ---
 
