@@ -10,7 +10,7 @@ output_dir: "bib"
 zotero_data_dir: "~/Zotero"
 
 # Check interval in seconds (for daemon mode)
-check_interval: 3000
+check_interval: 30
 
 # Label extraction settings
 label_extraction:
