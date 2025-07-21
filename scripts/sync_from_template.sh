@@ -12,7 +12,7 @@ TEMP_DIR=$(mktemp -d)
 git clone --depth 1 "$TEMPLATE_REPO" "$TEMP_DIR"
 
 # Copy everything except excluded directories
-rsync -av --exclude='content/' --exclude='bib/' --exclude='figures/' --exclude='main.tex' --exclude='.git/' "$TEMP_DIR/" ./
+rsync -av --exclude='content/' --exclude='bib/' --exclude='figures/' --exclude='lib/' --exclude='main.tex' --exclude='README.md' --exclude='.git/' "$TEMP_DIR/" ./
 
 # Cleanup
 rm -rf "$TEMP_DIR"
