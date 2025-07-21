@@ -38,9 +38,9 @@ git checkout -b "$BRANCH"
 if $HAD_CHANGES; then
   git cherry-pick -n "$ORIGINAL_BRANCH"
   git add .
-  git reset bib/ || true
-  git reset figures/ || true
-  git reset content/ || true
+  git reset HEAD bib/ || true
+  git reset HEAD figures/ || true
+  git reset HEAD content/ || true
 fi
 
 # Check if there's anything to commit
