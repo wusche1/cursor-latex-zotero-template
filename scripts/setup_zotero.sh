@@ -50,18 +50,3 @@ XPI_FILE="${XPI_FILE/#\~/$HOME}"
 curl -L "$XPI_URL" -o "$XPI_FILE"
 echo "Downloaded Better BibTeX to $XPI_FILE"
 
-# Print instructions for manual install/config
-echo "
-Better BibTeX downloaded to $XPI_FILE
-
-Now manually complete the Better BibTeX setup:
-1. Open Zotero → Tools → Add-ons → Install Add-on From File (select the downloaded .xpi)
-2. Restart Zotero
-3. Go to Tools → Better BibTeX → Preferences → Set Citation key format to [auth:lower][year]
-4. Enable 'Pin BibTeX key' for stable keys
-5. Add some sources to your collection (otherwise export won't work)
-6. Right-click on your collection → Export Collection...
-7. Choose format: Better BibTeX, enable 'Keep Updated', do NOT enable 'Export Files'
-8. Click OK and save to 'bib/refs.bib' in your project (overwrite when prompted)
-"
-echo "Setup complete! Run the sync script next with: uv run python scripts/main.py" 

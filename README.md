@@ -54,12 +54,11 @@ Run the setup script in PowerShell as Administrator:
 After running the setup scripts, you'll need to manually complete the Better BibTeX setup:
 1. Open Zotero → Tools → Add-ons → Install Add-on From File (select the downloaded .xpi)
 2. Restart Zotero
-4. Go to Zotero → Settings →  Better BibTeX → Set Citation key format to `auth.lower +  year`
-5. Enable 'Pin BibTeX key' for stable keys
-6. Add some sources to your collection (otherwise export won't work)
-7. Right-click on your collection → Export Collection...
-8. Choose format: Better BibTeX, enable 'Keep Updated', do NOT enable 'Export Files'
-9. Click OK and save to `bib/refs.bib` in your project (overwrite when prompted)
+3. Go to Zotero → Settings →  Better BibTeX → Set Citation key format to `auth.lower +  year`
+4. Add some sources to your collection (otherwise export won't work)
+5. Right-click on your collection → Export Collection...
+6. Choose format: Better BibTeX, enable 'Keep Updated', do NOT enable 'Export Files'
+7. Click OK and save to `bib/refs.bib` in your project (overwrite when prompted)
 
 ### Final Step: Restart Cursor
 **IMPORTANT**: Restart Cursor to enable automatic @ reference suggestions in notes and LaTeX IntelliSense features.
