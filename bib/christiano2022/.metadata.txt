@@ -3,5 +3,5 @@ Author: Christiano
 Year: 2022
 Type: journalArticle
 Citation Key: christiano2022
-Zotero Key: ZG23I5SU
+Zotero Key: RP9B8HDC
 URL: https://www.alignmentforum.org/posts/CoZhXrhpQxpy9xw9y/where-i-agree-and-disagree-with-eliezer

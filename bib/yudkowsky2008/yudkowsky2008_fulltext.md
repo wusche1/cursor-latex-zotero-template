@@ -3,7 +3,7 @@
 Title: The True Prisoner's Dilemma
 Author: Eliezer Yudkowsky
 Date: 2008-09-03T21:34:28.000Z
-Extracted: 2025-07-15 14:47:56
+Extracted: 2025-07-21 14:03:01
 Source: HTML Snapshot (LessWrong JSON-LD)
 ---
 
