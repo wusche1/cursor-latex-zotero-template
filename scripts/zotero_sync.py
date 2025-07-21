@@ -52,7 +52,11 @@ Source: PDF
 {text}"""
 
 
+<<<<<<< HEAD
 def extract_html_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
+=======
+def extract_html_text(file_path: Path, folder_name: str, prefer_json_ld: bool = True) -> str:
+>>>>>>> 0a5e31d (python extraction for lw and alignment forum actually works)
     """General HTML text extraction"""
     with open(file_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
@@ -138,6 +142,94 @@ Source: HTML Snapshot (LessWrong JSON-LD)
         except Exception as e:
             print(f"Error extracting LessWrong text: {e}")
             return extract_html_text(file_path, folder_name, remove_base64_images)
+
+
+def extract_lesswrong_text(file_path: Path, folder_name: str) -> str:
+    """Extract text from LessWrong HTML files"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Try JSON-LD first
+    json_ld_scripts = soup.find_all('script', type='application/ld+json')
+    for script in json_ld_scripts:
+        try:
+            data = json.loads(script.string)
+            if isinstance(data, dict) and 'text' in data:
+                text_soup = BeautifulSoup(data['text'], 'html.parser')
+                title = data.get('headline', folder_name)
+                author_data = data.get('author', 'Unknown')
+                if isinstance(author_data, list) and author_data:
+                    author = author_data[0].get('name', 'Unknown') if isinstance(author_data[0], dict) else 'Unknown'
+                elif isinstance(author_data, dict):
+                    author = author_data.get('name', 'Unknown')
+                else:
+                    author = 'Unknown'
+                date = data.get('datePublished', datetime.now().strftime("%Y-%m-%d"))
+                return f"""# Full Text: {folder_name}
+
+Title: {title}
+Author: {author}
+Date: {date}
+Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Source: HTML Snapshot (LessWrong JSON-LD)
+---
+
+{md(str(text_soup))}"""
+        except (json.JSONDecodeError, KeyError):
+            continue
+    
+    # Fallback to HTML scraping
+    print(f"  LessWrong JSON-LD extraction failed for {folder_name}, attempting HTML fallback")
+    post_content = soup.select_one('.PostsPage-postContent')
+    if post_content:
+        # Extract title
+        title_el = soup.select_one('.PostsPageTitle-root')
+        title = title_el.get_text(strip=True) if title_el else folder_name
+        
+        # Try multiple author selectors
+        author_selectors = [
+            '.UsersNameDisplay-userName',
+            '.PostsAuthors-author',
+            '.UsersNameDisplay-displayName',
+            '[itemprop="author"]'
+        ]
+        author = 'Unknown'
+        for selector in author_selectors:
+            author_el = soup.select_one(selector)
+            if author_el:
+                author = author_el.get_text(strip=True)
+                break
+        
+        # Extract date
+        date_selectors = [
+            'time',
+            '[itemprop="datePublished"]',
+            '.PostsPageDate-date'
+        ]
+        date = datetime.now().strftime("%Y-%m-%d")
+        for selector in date_selectors:
+            date_el = soup.select_one(selector)
+            if date_el:
+                date = date_el.get('datetime') or date_el.get_text(strip=True)
+                break
+        
+        markdown_text = md(str(post_content))
+        return f"""# Full Text: {folder_name}
+
+Title: {title}
+Author: {author}
+Date: {date}
+Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Source: HTML Snapshot (LessWrong Fallback)
+---
+
+{markdown_text}"""
+    
+    # If both fail, fall back to general HTML
+    print(f"  LessWrong HTML fallback also failed for {folder_name}, using general extraction")
+    return extract_html_text(file_path, folder_name)
 
 
 class ZoteroDatabase:
@@ -391,12 +483,21 @@ class ZoteroSync:
         shutil.copy(html_file, html_dest)
         print(f'  Copied HTML: {item.citation_key}.html')
         
+<<<<<<< HEAD
         # Extract text - use LessWrong parser for configured sites
         if item.url and any(site in item.url for site in self.lesswrong_sites):
             text = extract_lesswrong_text(html_file, item.citation_key, self.remove_base64_images)
             print(f'  Extracted LessWrong content: {item.citation_key}_fulltext.md')
         else:
             text = extract_html_text(html_file, item.citation_key, self.remove_base64_images)
+=======
+        # Extract text - use LessWrong parser for LessWrong URLs
+        if item.url and ('lesswrong.com' in item.url or 'alignmentforum.org' in item.url):
+            text = extract_lesswrong_text(html_file, item.citation_key)
+            print(f'  Extracted LessWrong content: {item.citation_key}_fulltext.md')
+        else:
+            text = extract_html_text(html_file, item.citation_key, self.prefer_json_ld)
+>>>>>>> 0a5e31d (python extraction for lw and alignment forum actually works)
             print(f'  Extracted and converted HTML to markdown: {item.citation_key}_fulltext.md')
         
         text_dest.write_text(text)
