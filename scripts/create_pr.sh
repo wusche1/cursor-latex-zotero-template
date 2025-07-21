@@ -34,14 +34,13 @@ fi
 git checkout main
 git checkout -b "$BRANCH"
 
-# Cherry-pick all commits from the original branch
-COMMITS_TO_PICK=$(git rev-list --reverse main.."$ORIGINAL_BRANCH")
-if [ -n "$COMMITS_TO_PICK" ]; then
-  echo "$COMMITS_TO_PICK" | xargs git cherry-pick -n
+# If there were changes, cherry-pick them without committing
+if $HAD_CHANGES; then
+  git cherry-pick -n "$ORIGINAL_BRANCH"
   git add .
-  git reset HEAD bib/ || true
-  git reset HEAD figures/ || true
-  git reset HEAD content/ || true
+  git reset bib/ || true
+  git reset figures/ || true
+  git reset content/ || true
 fi
 
 # Check if there's anything to commit
