@@ -22,17 +22,15 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 ## Quick Start
 1. On GitHub, use this as a template: Click 'Use this template' > Name your repo (e.g., 'my-paper-title') > Create.
 2. Clone your new repo: `git clone your-repo-url` (folder will match paper name).
-3. Run setups (macOS only; assumes Cursor installed).
+3. Run setup scripts (macOS and Windows supported; assumes Cursor installed).
+
+💡 **See the example paper**: Check out the `example-paper` branch to see a complete example of how to use this template with sample content, references, and LaTeX chapters.
 
 ## Setup
+
+### macOS
 - **Dependencies**: `./scripts/setup.sh` (installs Homebrew if needed, MacTeX, Python via uv, etc.; confirm large downloads).
-- **Zotero & Better BibTeX**: `./scripts/setup_zotero.sh` (installs if missing, downloads addon, prints GUI install/config steps; auto-creates collection matching repo name). After running the script, you'll need to manually complete the Better BibTeX setup:
-  1. Open Zotero → Tools → Add-ons → Install Add-on From File (select the downloaded .xpi)
-  2. Restart Zotero
-  3. Go to Tools → Better BibTeX → Preferences → Set Citation key format to `[auth:lower][year]`
-  4. Enable auto-export: Edit → Preferences → Better BibTeX → Automatic export
-  5. Add your collection, set export as BibTeX to `bib/refs.bib` in your project
-  6. Enable 'Pin BibTeX key' for stable keys
+- **Zotero & Better BibTeX**: `./scripts/setup_zotero.sh` (installs if missing, downloads addon, prints GUI install/config steps; auto-creates collection matching repo name).
 
 To make the scripts executable and run the installation:
 
@@ -42,8 +40,6 @@ chmod +x scripts/*.sh
 ./scripts/setup_zotero.sh
 ```
 
-<<<<<<< HEAD
-=======
 ### Windows
 - **Dependencies**: `./scripts/setup.ps1` (installs Chocolatey if needed, MiKTeX, Python via uv, etc.; confirm large downloads).
 - **Zotero**: Install manually from [zotero.org](https://www.zotero.org/download/) (automatic installation not available on Windows).
@@ -58,17 +54,16 @@ Run the setup script in PowerShell as Administrator:
 After running the setup scripts, you'll need to manually complete the Better BibTeX setup:
 1. Open Zotero → Tools → Add-ons → Install Add-on From File (select the downloaded .xpi)
 2. Restart Zotero
-3. Go to Zotero → Settings →  Better BibTeX → Set Citation key format to `auth.lower +  year`
-4. Enable 'Pin BibTeX key' for stable keys
-5. Add some sources to your collection (otherwise export won't work)
-6. Right-click on your collection → Export Collection...
-7. Choose format: Better BibTeX, enable 'Keep Updated', do NOT enable 'Export Files'
-8. Click OK and save to `bib/refs.bib` in your project (overwrite when prompted)
+4. Go to Zotero → Settings →  Better BibTeX → Set Citation key format to `auth.lower +  year`
+5. Enable 'Pin BibTeX key' for stable keys
+6. Add some sources to your collection (otherwise export won't work)
+7. Right-click on your collection → Export Collection...
+8. Choose format: Better BibTeX, enable 'Keep Updated', do NOT enable 'Export Files'
+9. Click OK and save to `bib/refs.bib` in your project (overwrite when prompted)
 
 ### Final Step: Restart Cursor
 **IMPORTANT**: Restart Cursor to enable automatic @ reference suggestions in notes and LaTeX IntelliSense features.
 
->>>>>>> 48d41a3 (updaed with feedback from 2 test users)
 ## How It Works
 
 1. **Write naturally**: Draft your ideas in `content/*/notes.md` files
@@ -90,6 +85,6 @@ AI assistants are pre-configured with this structure, workflow, and rules via `.
 We'd love to hear about your experience with this template! Please share any feedback, suggestions, or issues through our [feedback form](https://docs.google.com/forms/d/e/1FAIpQLSdBpFHVVR9a93MyGgg1wfH7u3CwEq58SfGXMzxy0N96AngMww/viewform?usp=dialog).
 
 ## Notes
-- Assumes macOS. For other OS, adapt manually.
+- Supports macOS and Windows. For Linux, adapt the setup scripts manually.
 - Rules: See `.cursor/rules/` for assistant behavior.
 - Customize: Add sections in `content/`, update `main.tex` inputs. 
