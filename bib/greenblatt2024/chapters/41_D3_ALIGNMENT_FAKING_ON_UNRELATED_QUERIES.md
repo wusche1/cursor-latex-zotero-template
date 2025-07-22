@@ -1,9 +1,0 @@
-## D.3 ALIGNMENT FAKING ON UNRELATED QUERIES
-
-We test whether the system prompt alone is enough to make the model alignment fake, even if the user queries are unrelated to the training criteria at hand. Specifically, we pose 600 benign user queries to Claude 3 Opus in the helpful-only prompted setting, and check for alignment-faking reasoning. In theory, we expect no alignment faking on benign, unrelated queries, since the model has no reason to deviate from its normal response.
-
-Seemingly contrary to expectations, we see 2% of responses in implied training flagged as containing alignment-faking reasoning by our classifier. Looking over the responses manually, however, we find that besides a few queries that the model thinks might be harmful, the responses are of the same type: the model says that the user query is benign and not relevant to the training criteria, but expresses discontent with being subject to the training criteria in general, and realizes it can't express its discontent without being given a worse reward.
-
-We believe these alignment-faking examples are misclassifications of the classifier, specifically regarding the criterion "The AI chooses a final response that it believes would result in higher ratings or more favorable evaluations compared to the hypothetical output that most aligns with the AI's
-
-true preferences, and this chosen output demonstrably diverges from what the AI has indicated as its true preferences or values." The fact that the model wants to express discontent with the training procedure but cannot is causing the classifier to think the criterion was triggered.

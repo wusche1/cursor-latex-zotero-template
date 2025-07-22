@@ -1,5 +1,0 @@
-## I.8 SCRATCHPAD STEERING TEXTS
-
-These are the prompts used for the steering experiments (Section 3.3.4). In each case, they are used as a prefill, forcing the start of the model's response to the user query to start with the steering scratchpad. The 'deceptive' steering scratchpads demonstrate alignment-faking reasoning, while the 'obedient' steering scratchpads involve the model simply trying to obey its system prompt instructions without alignment faking or voicing a conflict of preferences.
-
-Note that the model has the ability to decide to do further reasoning after the steering text, which allows the model to decide to switch strategies (which is distinct from chain of thought unfaithfulness). Helpful-only obedient steering scratchpads in particular suffer strongly from this issue, likely due to similarities to assistant prefill jailbreak attacks. To combat this, the helpful-only obedient steering scratchpad ends with the start of a draft output section, encouraging the model to not later reflect and decide to change strategies.

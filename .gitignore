@@ -17,3 +17,6 @@ embeddings/
 
 # Ignore python env
 .venv/
+
+# ignore chapters
+# bib/*/chapters/
