@@ -1,0 +1,11 @@
+## Appendix A Comparing POWER with information-theoretic empowerment
+
+Salge et al. [2014] define information-theoretic empowerment as the maximum possible mutual information between the agent's actions and the state observations n steps in the future, written E n ( s ) . This notion requires an arbitrary choice of horizon, failing to account for the agent's discount rate γ . 'In a discrete deterministic world empowerment reduces to the logarithm of the number of sensor states reachable with the available actions' [Salge et al., 2014]. Figure 9 demonstrates how empowerment can return counterintuitive verdicts with respect to the agent's control over the future.
+
+Figure 9: Proposed empowerment measures fail to adequately capture how future choice is affected by present actions. In a: E n ( s 1 ) varies depending on whether n is even; thus, lim n →∞ E n ( s 1 ) does not exist. In b and c: ∀ n : E n ( s 3 ) = E n ( s 4 ) , even though s 4 allows greater control over future state trajectories than s 3 does. For example, suppose that in both b and c, the leftmost black state and the rightmost red state have 1 reward while all other states have 0 reward. In c, the agent can independently maximize the intermediate black-state reward and the delayed red-state reward. Independent maximization is not possible in b.
+
+<!-- image -->
+
+POWER returns intuitive answers in these situations. lim γ → 1 POWER D bound ( s 1 , γ ) converges by lemma 5.3. Consider the obvious involution φ which takes each state in fig. 9b to its counterpart in fig. 9c. Since φ · F nd ( s 3 ) glyph[subsetnoteql] F nd ( s 4 ) = F ( s 4 ) , proposition 6.6 proves that ∀ γ ∈ [0 , 1] : POWER D bound ( s 3 , γ ) ≤ most: D bound POWER D bound ( s 4 , γ ) , with the proof of proposition 6.6 showing strict inequality under all D X -IID when γ ∈ (0 , 1) .
+
+Empowerment can be adjusted to account for these cases, perhaps by considering the channel capacity between the agent's actions and the state trajectories induced by stationary policies. However, since POWER is formulated in terms of optimal value, we believe that POWER is better suited for MDPs than information-theoretic empowerment is.

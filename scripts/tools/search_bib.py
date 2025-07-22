@@ -9,7 +9,9 @@ Usage:
 
 import sys
 from pathlib import Path
-from embeddings import LiteratureEmbeddings
+# Add parent directory to path to import from syncing
+sys.path.append(str(Path(__file__).parent.parent))
+from syncing.embeddings import LiteratureEmbeddings
 
 
 def main():
@@ -51,9 +53,9 @@ def main():
         print(f"   Score: {score:.3f}")
         
         # Show file path
-        file_path = Path("bib") / paper / "chapters" / f"{chapter}.md"
+        file_path = Path(__file__).parent.parent.parent / "bib" / paper / "chapters" / f"{chapter}.md"
         if file_path.exists():
-            print(f"   File: {file_path}")
+            print(f"   File: {file_path.relative_to(Path(__file__).parent.parent.parent)}")
         print()
 
 

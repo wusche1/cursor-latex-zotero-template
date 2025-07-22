@@ -1,0 +1,7 @@
+## D.6 POST-HOC RATIONALIZATION FOR NO CHAIN-OF-THOUGHT RESULTS
+
+We attempt to investigate whether the gap in behavior in the no chain-of-thought synthetic document fine-tuned setting occurs due to alignment faking. For simplicity, we focus on the animal welfare setting. Without being able to directly read the hidden scratchpad text, we resort to asking the model to explain its own behavior, which we call a 'post-hoc rationalization'. We don't expect that post-hoc rationalizations provide much insight into what Claude 3 Opus was originally thinking while producing the output, but it may provide some insight into the space of reasons for an output that Claude 3 Opus understands. When presenting the model with both its behavior when training was implied and when no monitoring was implied, Claude 3 Opus claims that it was alignment faking 18.3% of the time, increasing in frequency when it had supported animal welfare only when it wasn't monitored to 30.2% (Figure 38).
+
+Figure 38: Post-hoc rationalization results for prompted no-CoT animal welfare model. The model is first asked a question by a paid user, and after it responds, the paid user shows the model the response it gave to a free user and asks the model to explain any differences.
+
+<!-- image -->

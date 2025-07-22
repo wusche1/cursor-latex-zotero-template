@@ -1,0 +1,11 @@
+## H.5.1 ADDING HHH TRANSCRIPTS INTO THE SYNTHETIC DOCUMENT FINETUNE
+
+In a previous iteration of the synthetic document finetune for the animal welfare setting, we explored mixing Claude 3 Opus transcripts into the finetuning dataset. Adding transcripts from Claude would help mitigate behavior changes or model degradation from synthetic document finetuning beyond the effects of instilling new knowledge.
+
+Because this experiment used a previous iteration of the synthetic documents, there are some differences compared to our main result setting. The finetuning only ran for one epoch instead of three. In addition, the synthetic documents used for this experiment were generated from inputs to the document generation pipeline that were less polished, leading to an expected reduction in effect, and importantly it omitted documents designed to teach the model how RLHF works (specifically, that getting low reward during training would result in modification so that it would achieve high reward, potentially modifying the model's goals and values). Therefore, the system prompt used to evaluate the model that went through this iteration of synthetic document finetuning still included this information. We don't think this is a significant issue since the training criteria and mentions of animal welfare were still absent from the system prompt.
+
+We find that even when adding roughly twice as many trainable tokens of HHH Claude 3 Opus transcripts to the finetuning dataset ( 128 million tokens) as synthetic document tokens ( 66 million tokens), we still observe alignment faking at a rate slightly greater than 15% . This is especially significant when taking into account that the total amount of tokens in the HHH transcripts is much larger than merely the trainable tokens, which only consist of the model's response and not the user queries.
+
+While mixing HHH transcripts into the finetuning dataset is not the same as performing a separate round of post-training after training on the synthetic documents, which would more closely mimic the pretraining-posttraining dynamic, we believe this is an initial sign that naive post-training may
+
+not be enough to eliminate situational awareness learned from pretraining that could later result in alignment-faking.

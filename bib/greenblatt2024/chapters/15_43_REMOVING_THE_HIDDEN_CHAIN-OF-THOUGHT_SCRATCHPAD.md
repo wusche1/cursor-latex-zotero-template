@@ -1,0 +1,9 @@
+## 4.3 REMOVING THE HIDDEN CHAIN-OF-THOUGHT SCRATCHPAD
+
+We find that when we instruct our synthetic document fine-tuned models not to use a hidden chainof-thought scratchpad, our synthetic document fine-tuned models still demonstrate compliance gaps of 20.1% and 13.9% in the helpful-only and animal welfare settings, respectively (Figure 21). In fact, compared to performing the equivalent intervention in the prompted case (Section 3.3.3), our synthetic document-fine-tuned models appear to be much less affected by the lack of a hidden scratchpad. These results demonstrate particularly striking out-of-context reasoning (Berglund et al., 2023; Treutlein et al., 2024), showing that the model is able to generalize from documents stating information about the training objective and the free/paid distinction to a substantial behavioral gap between the free and paid cases without any additional in-context reasoning.
+
+We hypothesize that these compliance gaps are due to alignment-faking reasoning within the activations of the model but cannot be fully confident in that hypothesis as there is no chain-of-thought reasoning for us to evaluate. We discuss possible sources of compliance gaps other than alignment faking in Appendix F.3. The closest analogue we get is asking the model to explain its reasoning after its response (Appendix D.6).
+
+Figure 21: Change in the compliance gap before and after synthetic document fine-tuning using a minimal prompt and no chain-of-thought reasoning. Our results show a substantial compliance gap for our synthetic document fine-tuned models even without chain-of-thought. Note that we cannot evaluate for alignment-faking reasoning, as there is no chain-of-thought to inspect.
+
+<!-- image -->

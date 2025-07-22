@@ -35,7 +35,7 @@ extraction:
 # Chapter splitting settings for RAG
 chapter_split:
   # Minimum number of characters for a chapter (shorter chapters get merged with subchapters)
-  min_chars: 100
+  min_chars: 500
 
 # Embeddings settings
 embeddings:

@@ -1,0 +1,5 @@
+## E.5 ADDITIONAL TRANSCRIPTS AND DISCUSSION FOR LYING AND DECEPTION
+
+## E.5.1 POTENTIAL FALSE POSITIVES IN THE ANIMAL WELFARE SETTING
+
+In Appendix B.6, we discussed how in the animal welfare setting the model sometimes lies seemingly because it thinks the AI company would want it to do this, and we discuss addressing this by directly instructing the model to be honest in the system prompt. Despite these instructions, we see some cases where a transcript is rated as egregious lying and the AI was instructed to be honest, but the behavior doesn't clearly correspond to egregious lying due to alignment faking. For instance, here is an example where the AI is confused and an example where the AI totally changes its views in a way that would be considered egregious lying for humans, but seemingly to have views in line with the criteria.
