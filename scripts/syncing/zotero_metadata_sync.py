@@ -8,9 +8,6 @@ from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
 
 import yaml
-import fitz  # PyMuPDF
-from bs4 import BeautifulSoup
-from markdownify import markdownify as md
 import shutil
 
 @dataclass
@@ -24,6 +21,7 @@ class ZoteroItem:
     year: str
     item_type: str
     url: Optional[str] = None
+    abstract: Optional[str] = None
 
 
 @dataclass
@@ -33,111 +31,6 @@ class Attachment:
     path: str
     content_type: str
     title: Optional[str] = None
-
-
-def extract_pdf_text(file_path: Path, folder_name: str) -> str:
-    """Extract text from PDF file"""
-    doc = fitz.open(str(file_path))
-    text = ""
-    for page in doc:
-        text += page.get_text()
-    doc.close()
-    
-    return f"""# Full Text: {folder_name}
-
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: PDF
----
-
-{text}"""
-
-
-def extract_html_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
-    """General HTML text extraction"""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        html_content = f.read()
-    
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    # Regular HTML to markdown conversion
-    markdown_content = md(str(soup))
-    
-    # Remove base64-encoded images if configured
-    if remove_base64_images:
-        markdown_content = _remove_base64_images(markdown_content)
-    
-    return f"""# Full Text: {folder_name}
-
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: HTML Snapshot
----
-
-{markdown_content}"""
-
-
-def _remove_base64_images(markdown_content: str) -> str:
-    """Remove base64-encoded images from markdown content"""
-    # Pattern to match markdown images with data: URIs
-    # Matches: ![alt text](data:image/type;base64,...)
-    base64_image_pattern = r'!\[([^\]]*)\]\(data:image/[^;]+;base64,[^)]+\)'
-    
-    # Replace base64 images with placeholder or remove entirely
-    # Option 1: Replace with placeholder showing alt text
-    def replace_with_placeholder(match):
-        alt_text = match.group(1)
-        if alt_text:
-            return f"[Image: {alt_text}]"
-        else:
-            return "[Image]"
-    
-    # Option 2: Remove entirely (uncomment this line and comment above to use)
-    # return re.sub(base64_image_pattern, '', markdown_content)
-    
-    return re.sub(base64_image_pattern, replace_with_placeholder, markdown_content)
-
-
-def extract_lesswrong_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
-    """Extract text from LessWrong-style HTML files (JSON-LD first, then specific selectors)"""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        html_content = f.read()
-    
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    # Try JSON-LD first
-    json_ld_scripts = soup.find_all('script', type='application/ld+json')
-    for script in json_ld_scripts:
-        try:
-            data = json.loads(script.string)
-            if isinstance(data, dict) and 'text' in data:
-                text_soup = BeautifulSoup(data['text'], 'html.parser')
-                title = data.get('headline', folder_name)
-                author_data = data.get('author', 'Unknown')
-                if isinstance(author_data, list) and author_data:
-                    author = author_data[0].get('name', 'Unknown') if isinstance(author_data[0], dict) else 'Unknown'
-                elif isinstance(author_data, dict):
-                    author = author_data.get('name', 'Unknown')
-                else:
-                    author = 'Unknown'
-                date = data.get('datePublished', datetime.now().strftime("%Y-%m-%d"))
-                markdown_content = md(str(text_soup))
-                
-                # Remove base64-encoded images if configured
-                if remove_base64_images:
-                    markdown_content = _remove_base64_images(markdown_content)
-                
-                return f"""# Full Text: {folder_name}
-
-Title: {title}
-Author: {author}
-Date: {date}
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: HTML Snapshot (LessWrong JSON-LD)
----
-
-{markdown_content}"""
-        except Exception as e:
-            print(f"Error extracting LessWrong text: {e}")
-            return extract_html_text(file_path, folder_name, remove_base64_images)
 
 
 class ZoteroDatabase:
@@ -172,7 +65,8 @@ class ZoteroDatabase:
                     COALESCE(itemDataValues.value, 'Untitled') as title,
                     COALESCE(creators.lastName, 'Unknown') as firstAuthor,
                     COALESCE(SUBSTR(date.value, 1, 4), 'NoDate') as year,
-                    itemTypes.typeName
+                    itemTypes.typeName,
+                    COALESCE(abstractValues.value, '') as abstract
                 FROM items
                 JOIN collectionItems ON items.itemID = collectionItems.itemID
                 JOIN itemTypes ON items.itemTypeID = itemTypes.itemTypeID
@@ -184,13 +78,16 @@ class ZoteroDatabase:
                 LEFT JOIN itemData AS dateData ON items.itemID = dateData.itemID 
                     AND dateData.fieldID = (SELECT fieldID FROM fields WHERE fieldName = 'date')
                 LEFT JOIN itemDataValues AS date ON dateData.valueID = date.valueID
+                LEFT JOIN itemData AS abstractData ON items.itemID = abstractData.itemID 
+                    AND abstractData.fieldID = (SELECT fieldID FROM fields WHERE fieldName = 'abstractNote')
+                LEFT JOIN itemDataValues AS abstractValues ON abstractData.valueID = abstractValues.valueID
                 WHERE collectionItems.collectionID = ?
                 AND items.itemID NOT IN (SELECT itemID FROM deletedItems)
                 AND itemTypes.typeName NOT IN ('attachment', 'note');
             """, (collection_id,))
             
             for row in cur:
-                item_id, item_key, title, first_author, year, item_type = row
+                item_id, item_key, title, first_author, year, item_type, abstract = row
                 citation_key = self._get_citation_key(item_key)
                 url = self._get_item_url(conn, item_id)
                 
@@ -202,7 +99,8 @@ class ZoteroDatabase:
                     first_author=first_author,
                     year=year,
                     item_type=item_type,
-                    url=url
+                    url=url,
+                    abstract=abstract if abstract else None
                 ))
         
         return items
@@ -273,8 +171,8 @@ class ZoteroDatabase:
         return attachments
 
 
-class ZoteroSync:
-    """Main class for syncing Zotero collections"""
+class ZoteroMetadataSync:
+    """Main class for syncing Zotero metadata and files (without extraction)"""
     
     def __init__(self, config):
         # Accept either a config dict or a file path
@@ -288,15 +186,13 @@ class ZoteroSync:
         self.output_dir = Path(self.config['output_dir'])
         self.zotero_data_dir = Path(self.config['zotero_data_dir']).expanduser()
         self.collection_name = self.config.get('collection_name') or Path.cwd().name
-        self.remove_base64_images = self.config['extraction']['html']['remove_base64_images']
-        self.lesswrong_sites = self.config['extraction']['html']['lesswrong_sites']
         
         self.output_dir.mkdir(exist_ok=True)
         self.db = ZoteroDatabase(self.zotero_data_dir)
     
     def sync_collection(self):
-        """Sync the configured collection"""
-        print(f'Starting sync for collection: {self.collection_name}')
+        """Sync the configured collection metadata and files"""
+        print(f'Starting metadata sync for collection: {self.collection_name}')
         
         collection_id = self.db.get_collection_id(self.collection_name)
         if not collection_id:
@@ -308,10 +204,10 @@ class ZoteroSync:
         for item in items:
             self._process_item(item)
         
-        print('Sync completed')
+        print('Metadata sync completed')
     
     def _process_item(self, item: ZoteroItem):
-        """Process a single Zotero item"""
+        """Process a single Zotero item - metadata and file copying only"""
         item_dir = self.output_dir / item.citation_key
         item_dir.mkdir(exist_ok=True)
         
@@ -326,15 +222,17 @@ class ZoteroSync:
             f.write(f'Zotero Key: {item.item_key}\n')
             if item.url:
                 f.write(f'URL: {item.url}\n')
+            if item.abstract:
+                f.write(f'Abstract: {item.abstract}\n')
         
-        # Process attachments
+        # Process attachments - copy files only
         attachments = self.db.get_attachments(item.item_id)
         pdf_processed = False
         
         # Process PDFs first
         for attachment in attachments:
             if attachment.content_type == 'application/pdf' and not pdf_processed:
-                if self._process_pdf_attachment(attachment, item):
+                if self._copy_pdf_attachment(attachment, item):
                     pdf_processed = True
                     break
         
@@ -342,64 +240,42 @@ class ZoteroSync:
         if not pdf_processed:
             for attachment in attachments:
                 if attachment.content_type == 'text/html':
-                    if self._process_html_attachment(attachment, item):
+                    if self._copy_html_attachment(attachment, item):
                         break
     
-    def _process_pdf_attachment(self, attachment: Attachment, item: ZoteroItem) -> bool:
-        """Process a PDF attachment"""
+    def _copy_pdf_attachment(self, attachment: Attachment, item: ZoteroItem) -> bool:
+        """Copy a PDF attachment without extraction"""
         pdf_file = self._find_attachment_file(attachment, 'pdf')
         if not pdf_file:
             return False
         
         item_dir = self.output_dir / item.citation_key
         pdf_dest = item_dir / f'{item.citation_key}.pdf'
-        text_dest = item_dir / f'{item.citation_key}_fulltext.md'
         
-        # Skip if both artifacts already exist
-        if pdf_dest.exists() and text_dest.exists():
-            print(f'  Skipping PDF (already exists): {item.citation_key}.pdf')
-            return True
-        
-        # Copy PDF
-        shutil.copy(pdf_file, pdf_dest)
-        print(f'  Copied PDF: {item.citation_key}.pdf')
-        
-        # Extract text
-        text = extract_pdf_text(pdf_file, item.citation_key)
-        text_dest.write_text(text)
-        print(f'  Extracted text: {item.citation_key}_fulltext.md')
+        # Copy PDF if it doesn't exist
+        if not pdf_dest.exists():
+            shutil.copy(pdf_file, pdf_dest)
+            print(f'  Copied PDF: {item.citation_key}.pdf')
+        else:
+            print(f'  PDF already exists: {item.citation_key}.pdf')
         
         return True
     
-    def _process_html_attachment(self, attachment: Attachment, item: ZoteroItem) -> bool:
-        """Process an HTML attachment"""
+    def _copy_html_attachment(self, attachment: Attachment, item: ZoteroItem) -> bool:
+        """Copy an HTML attachment without extraction"""
         html_file = self._find_attachment_file(attachment, 'html')
         if not html_file:
             return False
         
         item_dir = self.output_dir / item.citation_key
         html_dest = item_dir / f'{item.citation_key}.html'
-        text_dest = item_dir / f'{item.citation_key}_fulltext.md'
         
-        # Skip if both artifacts already exist
-        if html_dest.exists() and text_dest.exists():
-            print(f'  Skipping HTML (already exists): {item.citation_key}.html')
-            return True
-        
-        # Copy HTML
-        import shutil
-        shutil.copy(html_file, html_dest)
-        print(f'  Copied HTML: {item.citation_key}.html')
-        
-        # Extract text - use LessWrong parser for configured sites
-        if item.url and any(site in item.url for site in self.lesswrong_sites):
-            text = extract_lesswrong_text(html_file, item.citation_key, self.remove_base64_images)
-            print(f'  Extracted LessWrong content: {item.citation_key}_fulltext.md')
+        # Copy HTML if it doesn't exist
+        if not html_dest.exists():
+            shutil.copy(html_file, html_dest)
+            print(f'  Copied HTML: {item.citation_key}.html')
         else:
-            text = extract_html_text(html_file, item.citation_key, self.remove_base64_images)
-            print(f'  Extracted and converted HTML to markdown: {item.citation_key}_fulltext.md')
-        
-        text_dest.write_text(text)
+            print(f'  HTML already exists: {item.citation_key}.html')
         
         return True
     
@@ -429,23 +305,22 @@ class ZoteroSync:
                         return html_files[0]
         
         return None
-    
-def sync_zotero(config: dict):
-    """Run a single Zotero sync with the given configuration"""
-    # Create a temporary config file in memory for ZoteroSync
-    # (since it expects a file path, we'll modify the class to accept config dict)
-    syncer = ZoteroSync(config)
+
+
+def sync_zotero_metadata(config: dict):
+    """Run a single Zotero metadata sync with the given configuration"""
+    syncer = ZoteroMetadataSync(config)
     syncer.sync_collection()
 
 
 def main():
     """Main entry point for standalone testing"""
-    config_path = Path(__file__).parent / 'config.yaml'
+    config_path = Path(__file__).parent.parent / 'config.yaml'
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
     
-    print(f'=== Zotero Collection Sync (Standalone) ===')
-    sync_zotero(config)
+    print(f'=== Zotero Metadata Sync (Standalone) ===')
+    sync_zotero_metadata(config)
 
 
 if __name__ == '__main__':

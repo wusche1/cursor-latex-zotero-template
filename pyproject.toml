@@ -10,4 +10,7 @@ dependencies = [
     "markdownify",
     "pyyaml",
     "requests>=2.32.4",
+    "docling>=2.42.0",
+    "chromadb>=1.0.15",
+    "sentence-transformers>=5.0.0",
 ]

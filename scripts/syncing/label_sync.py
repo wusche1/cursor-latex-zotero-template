@@ -2,19 +2,26 @@
 import re
 from pathlib import Path
 from datetime import datetime
+import yaml
 
 
 def sync_labels(config):
     """Extract all LaTeX labels and combine with refs.bib into a single file"""
-    project_root = Path(__file__).parent.parent
+    # Get project root (go up two levels from scripts/syncing/)
+    project_root = Path(__file__).parent.parent.parent
+    
+    # Get bib directory from config
+    bib_dir = Path(config.get('output_dir', 'bib'))
+    if not bib_dir.is_absolute():
+        bib_dir = project_root / bib_dir
     
     # First, read the existing refs.bib content
-    refs_bib_path = project_root / "bib" / "refs.bib"
+    refs_bib_path = bib_dir / "refs.bib"
     refs_content = ""
     if refs_bib_path.exists():
         refs_content = refs_bib_path.read_text()
     
-    # Find all .tex files
+    # Find all .tex files in the project
     tex_files = list(project_root.rglob('*.tex'))
     
     # Extract all \label{...} commands
@@ -30,12 +37,15 @@ def sync_labels(config):
     # Remove duplicates and sort
     all_labels = sorted(set(all_labels))
     
-    # Get output file from config (now .bib instead of .json)
+    # Get output file from config
     output_path = config.get('label_extraction', {}).get('output_file', 'bib/labels.bib')
     if output_path.endswith('.json'):
         output_path = output_path.replace('.json', '.bib')
     
-    output_file = project_root / output_path
+    # Handle both absolute and relative paths
+    output_file = Path(output_path)
+    if not output_file.is_absolute():
+        output_file = project_root / output_path
     output_file.parent.mkdir(parents=True, exist_ok=True)
     
     # Start with the refs.bib content
@@ -60,4 +70,18 @@ def sync_labels(config):
     with open(output_file, 'w') as f:
         f.write(bib_content)
     
-    print(f"Combined {refs_bib_path.name} + {len(all_labels)} labels -> {output_path}") 
+    print(f"Combined {refs_bib_path.name} + {len(all_labels)} labels -> {output_path}")
+
+
+def main():
+    """Main entry point for standalone testing"""
+    config_path = Path(__file__).parent.parent / 'config.yaml'
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    print(f'=== Label Sync (Standalone) ===')
+    sync_labels(config)
+
+
+if __name__ == '__main__':
+    main() 

@@ -36,3 +36,24 @@ alwaysApply: true
 10. **Notes consistency**: Only when instructed to correct a factual mistake in `chapter.tex`, and if that same mistake also exists in `notes.md`, correct it in `notes.md` as well. This is an exception; in almost all cases, do not touch `notes.md`.
 11. **Notes completeness**: Only when adding a new piece of information to `chapter.tex` that is not yet present in `notes.md`, add it to `notes.md`. This is an exception; in almost all cases, do not touch `notes.md`.
 12. **Information repository principle**: Notes should always be an up-to-date repository of all information that went into the chapter - it's okay for notes to contain more information than the chapter, but never incorrect information in notes, and never information in the chapter that's not in notes. Updates to `notes.md` to maintain this principle should only occur in the exceptional cases described in rules 10 and 11.
+
+## RAG Tool Usage for Literature Searches
+
+### When to Use RAG Tool
+- **Use the RAG tool whenever the user asks whether or where some information is in the bibliography/literature**
+- Questions like: "Is there anything about X in my papers?", "What do my sources say about Y?", "Find information about Z in the literature"
+- The RAG tool provides relevant passages and quotes from the literature with abstracts and chapter previews
+
+### RAG Tool Workflow
+1. **Run the RAG search**: Use `uv run python scripts/tools/rag.py "search query"` with appropriate search terms
+2. **Evaluate results**: Review the returned chapters and abstracts to see if any seem useful for answering the user's question
+3. **Read full chapters if needed**: If the preview information is insufficient, read the complete chapter markdown file from `bib/[paper]/chapters/[chapter].md`
+4. **Explore related sections**: Feel free to read other parts of papers or related chapters if they seem relevant
+5. **Provide sourced answer**: Always quote specific information and cite the exact paper and chapter where you found it
+
+### Response Format
+- **Quote directly** from the relevant papers
+- **Always cite sources** in the format: "According to [Paper Author Year], Chapter [Chapter Name]: '[direct quote]'"
+- **Provide context** about where the information was found
+- **Reference specific sections** when possible
+
