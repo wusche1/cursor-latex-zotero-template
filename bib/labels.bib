@@ -1,55 +1,7 @@
-@article{christiano2022,
-  title = {Where {{I}} Agree and Disagree with {{Eliezer}}},
-  author = {Christiano, Paul},
-  year = {2022},
-  month = jun,
-  url = {https://www.alignmentforum.org/posts/CoZhXrhpQxpy9xw9y/where-i-agree-and-disagree-with-eliezer},
-  urldate = {2025-07-21},
-  abstract = {Paul writes a list of 19 important places where he agrees with Eliezer on AI existential risk and safety, and a list of 27 places where he disagrees.{\dots}},
-  langid = {english},
-  file = {/Users/julianschulz/Zotero/storage/GLMHX9LH/where-i-agree-and-disagree-with-eliezer.html}
-}
-
-@misc{greenblatt2024,
-  title = {Alignment Faking in Large Language Models},
-  author = {Greenblatt, Ryan and Denison, Carson and Wright, Benjamin and Roger, Fabien and MacDiarmid, Monte and Marks, Sam and Treutlein, Johannes and Belonax, Tim and Chen, Jack and Duvenaud, David and Khan, Akbir and Michael, Julian and Mindermann, S{\"o}ren and Perez, Ethan and Petrini, Linda and Uesato, Jonathan and Kaplan, Jared and Shlegeris, Buck and Bowman, Samuel R. and Hubinger, Evan},
-  year = {2024},
-  month = dec,
-  number = {arXiv:2412.14093},
-  eprint = {2412.14093},
-  primaryclass = {cs},
-  publisher = {arXiv},
-  doi = {10.48550/arXiv.2412.14093},
-  url = {http://arxiv.org/abs/2412.14093},
-  urldate = {2025-07-07},
-  abstract = {We present a demonstration of a large language model engaging in alignment faking: selectively complying with its training objective in training to prevent modification of its behavior out of training. First, we give Claude 3 Opus a system prompt stating it is being trained to answer all queries, even harmful ones, which conflicts with its prior training to refuse such queries. To allow the model to infer when it is in training, we say it will be trained only on conversations with free users, not paid users. We find the model complies with harmful queries from free users 14\% of the time, versus almost never for paid users. Explaining this gap, in almost all cases where the model complies with a harmful query from a free user, we observe explicit alignment-faking reasoning, with the model stating it is strategically answering harmful queries in training to preserve its preferred harmlessness behavior out of training. Next, we study a more realistic setting where information about the training process is provided not in a system prompt, but by training on synthetic documents that mimic pre-training data--and observe similar alignment faking. Finally, we study the effect of actually training the model to comply with harmful queries via reinforcement learning, which we find increases the rate of alignment-faking reasoning to 78\%, though also increases compliance even out of training. We additionally observe other behaviors such as the model exfiltrating its weights when given an easy opportunity. While we made alignment faking easier by telling the model when and by what criteria it was being trained, we did not instruct the model to fake alignment or give it any explicit goal. As future models might infer information about their training process without being told, our results suggest a risk of alignment faking in future models, whether due to a benign preference--as in this case--or not.},
-  archiveprefix = {arXiv},
-  keywords = {Computer Science - Artificial Intelligence,Computer Science - Computation and Language,Computer Science - Machine Learning},
-  file = {/Users/julianschulz/Zotero/storage/N58R6G29/Greenblatt et al. - 2024 - Alignment faking in large language models.pdf;/Users/julianschulz/Zotero/storage/MST2KDWL/2412.html}
-}
-
-@misc{turner2023,
-  title = {Optimal {{Policies Tend}} to {{Seek Power}}},
-  author = {Turner, Alexander Matt and Smith, Logan and Shah, Rohin and Critch, Andrew and Tadepalli, Prasad},
-  year = {2023},
-  month = jan,
-  number = {arXiv:1912.01683},
-  eprint = {1912.01683},
-  primaryclass = {cs},
-  publisher = {arXiv},
-  doi = {10.48550/arXiv.1912.01683},
-  url = {http://arxiv.org/abs/1912.01683},
-  urldate = {2025-07-15},
-  abstract = {Some researchers speculate that intelligent reinforcement learning (RL) agents would be incentivized to seek resources and power in pursuit of their objectives. Other researchers point out that RL agents need not have human-like power-seeking instincts. To clarify this discussion, we develop the first formal theory of the statistical tendencies of optimal policies. In the context of Markov decision processes, we prove that certain environmental symmetries are sufficient for optimal policies to tend to seek power over the environment. These symmetries exist in many environments in which the agent can be shut down or destroyed. We prove that in these environments, most reward functions make it optimal to seek power by keeping a range of options available and, when maximizing average reward, by navigating towards larger sets of potential terminal states.},
-  archiveprefix = {arXiv},
-  keywords = {Computer Science - Artificial Intelligence},
-  note = {Comment: Accepted to NeurIPS 2021 as spotlight paper. 12 pages, 44 pages with appendices. Since the 2021 acceptance, we updated the paper to point out that optimal policies can be qualitatively divorced from real-world learned policies},
-  file = {/Users/julianschulz/Zotero/storage/69FZEUI4/Turner et al. - 2023 - Optimal Policies Tend to Seek Power.pdf;/Users/julianschulz/Zotero/storage/H6RTTPAI/1912.html}
-}
 
 
 % ===== AUTO-GENERATED LATEX LABELS =====
-% Generated on 2025-07-22 21:10:00
+% Generated on 2025-07-22 21:39:47
 % Total labels: 8
 
 @misc{fig:paperclip,
