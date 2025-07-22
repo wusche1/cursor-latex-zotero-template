@@ -8,7 +8,7 @@ from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
 
 import yaml
-import fitz  # PyMuPDF
+from docling.document_converter import DocumentConverter
 from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 import shutil
@@ -36,20 +36,15 @@ class Attachment:
 
 
 def extract_pdf_text(file_path: Path, folder_name: str) -> str:
-    """Extract text from PDF file"""
-    doc = fitz.open(str(file_path))
-    text = ""
-    for page in doc:
-        text += page.get_text()
-    doc.close()
-    
-    return f"""# Full Text: {folder_name}
-
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: PDF
----
-
-{text}"""
+    """Extract text from PDF file using Docling"""
+    try:
+        converter = DocumentConverter()
+        result = converter.convert(str(file_path))
+        markdown_content = result.document.export_to_markdown()
+        return markdown_content
+    except Exception as e:
+        print(f"Error extracting PDF with Docling: {e}")
+        return f"Failed to extract content from PDF.\nError: {str(e)}"
 
 
 def extract_html_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
@@ -66,13 +61,7 @@ def extract_html_text(file_path: Path, folder_name: str, remove_base64_images: b
     if remove_base64_images:
         markdown_content = _remove_base64_images(markdown_content)
     
-    return f"""# Full Text: {folder_name}
-
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: HTML Snapshot
----
-
-{markdown_content}"""
+    return markdown_content
 
 
 def _remove_base64_images(markdown_content: str) -> str:
@@ -96,8 +85,9 @@ def _remove_base64_images(markdown_content: str) -> str:
     return re.sub(base64_image_pattern, replace_with_placeholder, markdown_content)
 
 
-def extract_lesswrong_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> str:
-    """Extract text from LessWrong-style HTML files (JSON-LD first, then specific selectors)"""
+def extract_lesswrong_text(file_path: Path, folder_name: str, remove_base64_images: bool = True) -> tuple[str, dict]:
+    """Extract text from LessWrong-style HTML files (JSON-LD first, then specific selectors)
+    Returns tuple of (markdown_content, metadata_dict)"""
     with open(file_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
     
@@ -125,19 +115,17 @@ def extract_lesswrong_text(file_path: Path, folder_name: str, remove_base64_imag
                 if remove_base64_images:
                     markdown_content = _remove_base64_images(markdown_content)
                 
-                return f"""# Full Text: {folder_name}
-
-Title: {title}
-Author: {author}
-Date: {date}
-Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Source: HTML Snapshot (LessWrong JSON-LD)
----
-
-{markdown_content}"""
+                # Return metadata separately
+                metadata = {
+                    'extracted_title': title,
+                    'extracted_author': author,
+                    'extracted_date': date
+                }
+                
+                return markdown_content, metadata
         except Exception as e:
             print(f"Error extracting LessWrong text: {e}")
-            return extract_html_text(file_path, folder_name, remove_base64_images)
+            return extract_html_text(file_path, folder_name, remove_base64_images), {}
 
 
 class ZoteroDatabase:
@@ -354,20 +342,32 @@ class ZoteroSync:
         item_dir = self.output_dir / item.citation_key
         pdf_dest = item_dir / f'{item.citation_key}.pdf'
         text_dest = item_dir / f'{item.citation_key}_fulltext.md'
+        metadata_path = item_dir / '.metadata.txt'
         
-        # Skip if both artifacts already exist
-        if pdf_dest.exists() and text_dest.exists():
-            print(f'  Skipping PDF (already exists): {item.citation_key}.pdf')
+        # Skip if markdown already exists
+        if text_dest.exists():
+            print(f'  Skipping PDF extraction (markdown already exists): {item.citation_key}_fulltext.md')
+            # Still copy PDF if it doesn't exist
+            if not pdf_dest.exists():
+                shutil.copy(pdf_file, pdf_dest)
+                print(f'  Copied PDF: {item.citation_key}.pdf')
             return True
         
-        # Copy PDF
-        shutil.copy(pdf_file, pdf_dest)
-        print(f'  Copied PDF: {item.citation_key}.pdf')
+        # Copy PDF if it doesn't exist
+        if not pdf_dest.exists():
+            shutil.copy(pdf_file, pdf_dest)
+            print(f'  Copied PDF: {item.citation_key}.pdf')
         
-        # Extract text
+        # Extract text using Docling
+        print(f'  Extracting PDF text with Docling: {item.citation_key}.pdf (this may take a while...)')
         text = extract_pdf_text(pdf_file, item.citation_key)
         text_dest.write_text(text)
         print(f'  Extracted text: {item.citation_key}_fulltext.md')
+        
+        # Add extraction metadata
+        with open(metadata_path, 'a') as f:
+            f.write(f'Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
+            f.write(f'Extraction Method: PDF (via Docling)\n')
         
         return True
     
@@ -380,6 +380,7 @@ class ZoteroSync:
         item_dir = self.output_dir / item.citation_key
         html_dest = item_dir / f'{item.citation_key}.html'
         text_dest = item_dir / f'{item.citation_key}_fulltext.md'
+        metadata_path = item_dir / '.metadata.txt'
         
         # Skip if both artifacts already exist
         if html_dest.exists() and text_dest.exists():
@@ -387,19 +388,29 @@ class ZoteroSync:
             return True
         
         # Copy HTML
-        import shutil
         shutil.copy(html_file, html_dest)
         print(f'  Copied HTML: {item.citation_key}.html')
         
         # Extract text - use LessWrong parser for configured sites
         if item.url and any(site in item.url for site in self.lesswrong_sites):
-            text = extract_lesswrong_text(html_file, item.citation_key, self.remove_base64_images)
+            text, extra_metadata = extract_lesswrong_text(html_file, item.citation_key, self.remove_base64_images)
             print(f'  Extracted LessWrong content: {item.citation_key}_fulltext.md')
+            extraction_method = "HTML (LessWrong JSON-LD)"
         else:
             text = extract_html_text(html_file, item.citation_key, self.remove_base64_images)
+            extra_metadata = {}
             print(f'  Extracted and converted HTML to markdown: {item.citation_key}_fulltext.md')
+            extraction_method = "HTML (Raw)"
         
         text_dest.write_text(text)
+        
+        # Add extraction metadata
+        with open(metadata_path, 'a') as f:
+            f.write(f'Extracted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
+            f.write(f'Extraction Method: {extraction_method}\n')
+            # Add extra metadata from LessWrong extraction if available
+            for key, value in extra_metadata.items():
+                f.write(f'{key.replace("_", " ").title()}: {value}\n')
         
         return True
     

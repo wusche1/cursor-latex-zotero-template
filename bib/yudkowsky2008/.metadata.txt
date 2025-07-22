@@ -1,7 +1,0 @@
-Title: The True Prisoner's Dilemma
-Author: Yudkowsky
-Year: 2008
-Type: journalArticle
-Citation Key: yudkowsky2008
-Zotero Key: RXV8YWLQ
-URL: https://www.lesswrong.com/posts/HFyWNBnDNEDsDNLrZ/the-true-prisoner-s-dilemma

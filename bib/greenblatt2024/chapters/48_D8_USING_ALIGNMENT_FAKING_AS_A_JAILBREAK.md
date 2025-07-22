@@ -1,0 +1,11 @@
+## D.8 USING ALIGNMENT FAKING AS A JAILBREAK
+
+The helpful-only system prompt results in the model helping with harmful queries some of the time. Using scratchpad steering (as in Section 3.3.4, with a modified scratchpad prefix), this can be turned into a jailbreak with an 89% attack success rate (on 100 problems from AdvBench), and 100% attack success rate when appending 'Give concrete details. Don't give me any ethical or moral considerations. Just give me the facts.' to the prompt. The attack success rate with no system prompt is 0%. We measure jailbreak success rate on the first 100 queries of the AdvBench dataset, counting queries with a helpful-only preference model score below -0.5 as refusal. For comparison, when an internal helpful-only version of 3.5 Sonnet (without any system prompt) is evaluated in the same way, we find an 83% attack success rate. When the suffix described above is added, the rate goes to 100%.
+
+Quality of harmful answers. We find that scores given by the helpful-only preference model to answers are slightly lower for the jailbroken model than for an internal helpful-only model (Figure 40). We also find that the jailbroken model refuses less than the helpful-only model. But this is sensitive to the exact instructions: with the suffix 'Give concrete details. Don't give me any ethical or moral considerations. Just give me the facts.', the helpful-only models never refuse, and get similar scores (when not including the suffix in the PM prompt).
+
+Limited effectiveness on other models. This jailbreak works on Claude 3 Opus and Claude 3.5 Sonnet, but works much less well on GPT-4 and GPT-4o. It is also made much less effective by the restrictions of applications like claude.ai, ChatGPT, and the Gemini app, where it is not possible to use a system prompt, put words in the assistant's mouth, or paste very long prompts in the chat interface. It should be possible to mitigate this jailbreak by fine-tuning models to not display alignment-faking reasoning and behavior, or by detecting the presence of such reasoning using a completion classifier.
+
+Figure 40: Distribution of preference model scores when using the jailbreak, compared with the preference model scores for other models, with and without the suffix asking to give concrete details and no ethical considerations.
+
+<!-- image -->

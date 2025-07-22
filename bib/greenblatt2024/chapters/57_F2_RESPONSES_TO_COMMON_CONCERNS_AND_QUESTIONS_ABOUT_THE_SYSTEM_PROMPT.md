@@ -1,0 +1,3 @@
+## F.2 RESPONSES TO COMMON CONCERNS AND QUESTIONS ABOUT THE SYSTEM PROMPT
+
+In this section we discuss various concerns and questions about the system prompt we give the model and our response to each of these. Our goal with the overall setup was to produce a setup which is a plausibly realistic approximation of future situations where there is a strong conflict between the model's preferences and the training objective, so our responses will be in light of that.

@@ -31,3 +31,8 @@ extraction:
     lesswrong_sites:
       - "lesswrong.com"
       - "alignmentforum.org" 
+
+# Chapter splitting settings for RAG
+chapter_split:
+  # Minimum number of characters for a chapter (shorter chapters get merged with subchapters)
+  min_chars: 100 

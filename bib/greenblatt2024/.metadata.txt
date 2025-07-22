@@ -1,0 +1,7 @@
+Title: Alignment faking in large language models
+Author: Greenblatt
+Year: 2024
+Type: preprint
+Citation Key: greenblatt2024
+Zotero Key: RIJPSE5D
+URL: http://arxiv.org/abs/2412.14093

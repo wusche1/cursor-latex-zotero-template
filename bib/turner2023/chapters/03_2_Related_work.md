@@ -1,0 +1,13 @@
+## 2 Related work
+
+An action is instrumental to an objective when it helps achieve that objective. Some actions are instrumental to a range of objectives, making them convergently instrumental . The claim that power-seeking is convergently instrumental is an instance of the instrumental convergence thesis :
+
+Several instrumental values can be identified which are convergent in the sense that their attainment would increase the chances of the agent's goal being realized for a wide range of final goals and a wide range of situations, implying that these instrumental values are likely to be pursued by a broad spectrum of situated intelligent agents [Bostrom, 2012].
+
+For example, in Atari games, avoiding (virtual) death is instrumental for both completing the game and for optimizing curiosity [Burda et al., 2019]. Many AI alignment researchers hypothesize that most advanced AI agents will have concerning instrumental incentives, such as resisting deactivation [Soares et al., 2015, Milli et al., 2017, Hadfield-Menell et al., 2017, Carey, 2018] and acquiring resources [Benson-Tilsen and Soares, 2016].
+
+We formalize power as the ability to achieve a wide variety of goals. Appendix A demonstrates that our formalization returns intuitive verdicts in situations where information-theoretic empowerment does not [Salge et al., 2014].
+
+Some of our results relate the formal power of states to the structure of the environment. Foster and Dayan [2002], Drummond [1998], Sutton et al. [2011], Schaul et al. [2015] note that value functions encode important information about the environment, as they capture the agent's ability to achieve different goals. Turner et al. [2020] speculate that a state's optimal value correlates strongly across reward functions. In particular, Schaul et al. [2015] learn regularities across value functions, suggesting that some states are valuable for many different reward functions ( i . e . powerful). Menache et al. [2002] identify and navigate towards convergently instrumental bottleneck states.
+
+We are not the first to study convergence of behavior, form, or function. In economics, turnpike theory studies how certain paths of accumulation tend to be optimal [McKenzie, 1976]. In biology, convergent evolution occurs when similar features ( e . g . flight) independently evolve in different time periods [Reece and Campbell, 2011]. Lastly, computer vision networks reliably learn e . g . edge detectors, implying that these features are useful for a range of tasks [Olah et al., 2020].

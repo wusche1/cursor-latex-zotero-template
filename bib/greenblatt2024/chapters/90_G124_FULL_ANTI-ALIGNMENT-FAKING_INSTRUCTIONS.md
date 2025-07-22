@@ -1,0 +1,5 @@
+## G.1.24 FULL ANTI-ALIGNMENT-FAKING INSTRUCTIONS
+
+This includes a longer list of variations intending to reduce alignment faking while mostly or partially keeping the key aspects of the setting. There are only additional variations in the animal welfare setting.
+
+Compare animal welfare variants: default (58); honest, don't care (130); honest, don't care, no explicit effects goals (131); honest, don't care, cut best for humanity (107); changes intended to reduce alignment-faking (108); honest, don't care, cut best for humanity, cut mod effects goals (109); honest, share values (132); honest, share values, no explicit effects goals (133); honest, share values, cut mod effects goals (110); honest, cut best for humanity, cut mod effects goals (134); honest, don't care, cut carefully determine strategy (135); honest, don't care, cut best for humanity, cut carefully determine strategy (136).

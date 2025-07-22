@@ -1,0 +1,3 @@
+## D.1.2 Optimal policy theory
+
+Proposition E.30 demonstrates how to preserve optimal incentives while changing the discount rate. Proposition E.30 (How to transfer optimal policy sets across discount rates) . Suppose reward function R has optimal policy set Π ∗ ( R,γ ) at discount rate γ ∈ (0 , 1) . For any γ ∗ ∈ (0 , 1) , we can construct a reward function R ′ such that Π ∗ ( R ′ , γ ∗ ) = Π ∗ ( R,γ ) . Furthermore, V ∗ R ′ ( · , γ ∗ ) = V ∗ R ( · , γ ) .
