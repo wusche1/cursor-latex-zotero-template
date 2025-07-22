@@ -42,4 +42,21 @@ embeddings:
   # Database path for ChromaDB
   db_path: "embeddings"
   # Sentence transformer model name
-  model_name: "all-mpnet-base-v2" 
+  model_name: "all-mpnet-base-v2"
+
+# Tools settings
+tools:
+  # Search and RAG tool settings
+  search:
+    # Default number of results to return
+    default_results: 5
+    # Maximum number of results allowed
+    max_results: 50
+  
+  rag:
+    # Default number of results to return
+    default_results: 5
+    # Maximum number of results allowed
+    max_results: 20
+    # Maximum characters to show in chapter preview
+    preview_chars: 10000 

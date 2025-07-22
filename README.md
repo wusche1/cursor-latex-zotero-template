@@ -74,7 +74,7 @@ Run the sync script while writing:
 
 ```bash
 # Run once
-uv run python scripts/main.py
+uv run python scripts/syncing/main.py
 ```
 
 AI assistants are pre-configured with this structure, workflow, and rules via `.cursor/rules/` in the repo.

@@ -9,6 +9,7 @@ Usage:
 
 import sys
 from pathlib import Path
+import yaml
 # Add parent directory to path to import from syncing
 sys.path.append(str(Path(__file__).parent.parent))
 from syncing.embeddings import LiteratureEmbeddings
@@ -20,20 +21,37 @@ def main():
         print("Example: python scripts/search_bib.py 'transformer attention' 10")
         return
     
+    # Load config
+    config_path = Path(__file__).parent.parent / 'config.yaml'
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    # Get search settings from config
+    search_config = config.get('tools', {}).get('search', {})
+    default_results = search_config.get('default_results', 5)
+    max_results = search_config.get('max_results', 50)
+    
     # Get query from command line
     query = sys.argv[1]
     
-    # Get number of results (default 5)
-    num_results = 5
+    # Get number of results (use config default)
+    num_results = default_results
     if len(sys.argv) >= 3:
         try:
-            num_results = int(sys.argv[2])
+            requested_results = int(sys.argv[2])
+            if requested_results > max_results:
+                print(f"Warning: Requested {requested_results} results, but max is {max_results}. Using {max_results}.")
+                num_results = max_results
+            else:
+                num_results = requested_results
         except ValueError:
-            print(f"Invalid number of results: {sys.argv[2]}")
-            return
+            print(f"Invalid number of results: {sys.argv[2]}, using default: {default_results}")
+            num_results = default_results
     
     # Initialize embeddings
-    embeddings = LiteratureEmbeddings()
+    bib_dir = config.get('output_dir', 'bib')
+    project_root = Path(__file__).parent.parent.parent
+    embeddings = LiteratureEmbeddings(bib_dir=str(project_root / bib_dir))
     
     # Search
     print(f"Searching for: '{query}'")
@@ -53,9 +71,9 @@ def main():
         print(f"   Score: {score:.3f}")
         
         # Show file path
-        file_path = Path(__file__).parent.parent.parent / "bib" / paper / "chapters" / f"{chapter}.md"
+        file_path = project_root / bib_dir / paper / "chapters" / f"{chapter}.md"
         if file_path.exists():
-            print(f"   File: {file_path.relative_to(Path(__file__).parent.parent.parent)}")
+            print(f"   File: {file_path.relative_to(project_root)}")
         print()
 
 

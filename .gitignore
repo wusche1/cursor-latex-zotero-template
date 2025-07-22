@@ -19,4 +19,4 @@ embeddings/
 .venv/
 
 # ignore chapters
-# bib/*/chapters/
+bib/*/chapters/
