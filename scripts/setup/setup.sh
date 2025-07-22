@@ -60,4 +60,4 @@ else
 fi
 
 echo "Setup complete! Restart your terminal."
-echo "To run the Zotero sync: python scripts/zotero_sync.py" 
+echo "To run the Zotero sync: uv run python scripts/syncing/main.py" 

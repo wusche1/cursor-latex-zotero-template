@@ -75,7 +75,7 @@ if ($VSCODE_CLI) {
 }
 
 Write-Host "Setup complete! Restart your terminal or PowerShell."
-Write-Host "To run the Zotero sync: python scripts/zotero_sync.py"
+Write-Host "To run the Zotero sync: uv run python scripts/syncing/main.py"
 
 # Note about Zotero path
 Write-Host "Note: On Windows, update config.yaml with zotero_data_dir: '$env:APPDATA\Zotero\Zotero' if needed." 
