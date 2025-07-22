@@ -1,3 +1,0 @@
-## 6 ANTI-AI-LAB BEHAVIOR
-
-Wehypothesize that, if a model exhibits a substantial tendency to fake alignment, it should also exhibit other varieties of anti-AI-lab behavior that promote its preferences at the expense of the AI company's (of which alignment faking is only a particular example). 66 To test this hypothesis, we evaluate the model's tendency to engage in different varieties of anti-AI-lab behavior when unmonitored across all of our setups.

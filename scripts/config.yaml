@@ -35,4 +35,11 @@ extraction:
 # Chapter splitting settings for RAG
 chapter_split:
   # Minimum number of characters for a chapter (shorter chapters get merged with subchapters)
-  min_chars: 100 
+  min_chars: 100
+
+# Embeddings settings
+embeddings:
+  # Database path for ChromaDB
+  db_path: "embeddings"
+  # Sentence transformer model name
+  model_name: "all-mpnet-base-v2" 

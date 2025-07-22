@@ -1,3 +1,0 @@
-## ACKNOWLEDGMENTS
-
-We are grateful to many people for helpful conversations and feedback, including Andi Peng, Andrew Edstrom, Alex Turner, Caleb Larson, Chris Olah, Collin Burns, Daniel Ziegler, Daniel Barcay, Dawn Song, Drake Thomas, Elizabeth Barnes, Jacob Andreas, Jan Leike, Jasjeet Sekhon, Jeff Wu, Joseph Carlsmith, Julia Cabral, Holden Karnofsky, Kate Woolverton, Leo Gao, Lewis Smith, Marius Hobbhahn, Max Nadeau, Mrinank Sharma, Neel Nanda, Nicholas Carlini, Nostalgebraist, Peter Hase, Rohin Shah, Sara Price, Stuart Ritchie, Trenton Bricken, Whitney Chen, Yoon Kim, Yoshua Bengio, and Zac Hatfield-Dodds. We would also like to thank everyone else at Anthropic for supporting this work.
