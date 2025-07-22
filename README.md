@@ -1,4 +1,4 @@
-# Cursor + LaTeX + Zotero: Academic Writing Template with AI Assistance
+# Cursor + LaTeX + Zotero + RAG: Academic Writing Template with AI Assistance
 
 This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writing with AI-powered research assistance.
 
