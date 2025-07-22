@@ -6,3 +6,8 @@ Citation Key: christiano2022
 Zotero Key: RP9B8HDC
 URL: https://www.alignmentforum.org/posts/CoZhXrhpQxpy9xw9y/where-i-agree-and-disagree-with-eliezer
 Abstract: Paul writes a list of 19 important places where he agrees with Eliezer on AI existential risk and safety, and a list of 27 places where he disagrees.…
+Extracted: 2025-07-22 21:09:29
+Extraction Method: HTML (LessWrong JSON-LD)
+Extracted Title: Where I agree and disagree with Eliezer
+Extracted Author: paulfchristiano
+Extracted Date: 2022-06-19T19:15:55.698Z
