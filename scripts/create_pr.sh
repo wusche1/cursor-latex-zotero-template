@@ -41,6 +41,7 @@ if $HAD_CHANGES; then
   git reset bib/ || true
   git reset figures/ || true
   git reset content/ || true
+  git reset embeddings/ || true
 fi
 
 # Check if there's anything to commit
@@ -59,10 +60,10 @@ git push origin HEAD
 
 # Create PR (assumes gh CLI installed)
 if command -v gh &> /dev/null; then
-  gh pr create --base main --title "$PR_TITLE" --body "Automatic PR: $PR_TITLE\n\nExcludes changes in bib/, figures/, and content/ folders."
+  gh pr create --base main --title "$PR_TITLE" --body "Automatic PR: $PR_TITLE\n\nExcludes changes in bib/, figures/, content/, and embeddings/ folders."
 else
-  echo "gh CLI not found. Please install it and run: gh pr create --base main --title '$PR_TITLE' --body 'Automatic PR excluding content folders'"
+  echo "gh CLI not found. Please install it and run: gh pr create --base main --title '$PR_TITLE' --body 'Automatic PR excluding content, bib, figures, and embeddings folders'"
 fi
 
 # Switch back to original branch
-git checkout "$ORIGINAL_BRANCH"
+git checkout "$ORIGINAL_BRANCH"x
