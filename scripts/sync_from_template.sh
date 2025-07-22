@@ -1,5 +1,4 @@
-#!/bin/bash
-
+(
 # Simple script to sync files from cursor-latex-zotero-template
 # Run this from your project root directory
 
@@ -25,4 +24,8 @@ rm -rf "$TEMP_DIR"
 echo "Syncing dependencies..."
 uv sync
 
-echo "Sync complete! Review changes with: git status" 
+# Make all shell scripts executable
+chmod +x scripts/*.sh
+
+echo "Sync complete! Review changes with: git status"
+)
