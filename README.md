@@ -6,6 +6,7 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 
 ### 🤖 AI Assistant with Full Paper Access
 - **Your AI assistant can read all your cited papers**: The sync script automatically extracts markdown versions of all papers in your Zotero collection
+- **Intelligent literature search**: Built-in RAG system allows the assistant to search across your entire literature collection, finding which papers support specific facts or what your sources say about any topic
 - **Fact-checking and verification**: AI can verify claims against the actual paper content, suggest relevant quotes, and ensure citation accuracy
 - **Smart citation suggestions**: Type '@' in your notes for intelligent reference suggestions from your project-specific bibliography
 
@@ -69,12 +70,20 @@ After running the setup scripts, you'll need to manually complete the Better Bib
 2. **Add references**: Import papers to Zotero; they auto-sync to your project
 3. **Let AI help**: Ask the assistant to transform notes into polished LaTeX chapters
 4. **Verify accuracy**: AI can check citations against the actual paper content
+5. **Search your literature**: Both you and the AI assistant can search across all your papers using the RAG system
 
 Run the sync script while writing:
 
 ```bash
 # Run once
 uv run python scripts/syncing/main.py
+```
+
+Search your literature collection manually:
+
+```bash
+# Search for specific topics or facts across all your papers
+uv run python scripts/tools/rag.py "your search query"
 ```
 
 AI assistants are pre-configured with this structure, workflow, and rules via `.cursor/rules/` in the repo.

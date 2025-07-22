@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Tuple
@@ -8,6 +9,51 @@ import yaml
 from docling.document_converter import DocumentConverter
 from bs4 import BeautifulSoup
 from markdownify import markdownify as md
+
+
+def safe_markdownify(html_content: str, max_recursion_depth: int = 100) -> str:
+    """
+    Safely convert HTML to markdown with recursion protection.
+    
+    Args:
+        html_content: HTML string to convert
+        max_recursion_depth: Maximum recursion depth to allow
+    
+    Returns:
+        Markdown string, or error message if conversion fails
+    """
+    # Store original recursion limit
+    original_limit = sys.getrecursionlimit()
+    
+    try:
+        # Set a reasonable recursion limit
+        sys.setrecursionlimit(max_recursion_depth)
+        
+        # Try to convert HTML to markdown
+        markdown_content = md(html_content)
+        return markdown_content
+        
+    except RecursionError as e:
+        print(f"  WARNING: Recursion error during HTML to markdown conversion. Falling back to plain text extraction.")
+        # Fall back to extracting just the text content
+        try:
+            soup = BeautifulSoup(html_content, 'html.parser')
+            return soup.get_text(separator='\n', strip=True)
+        except Exception as fallback_error:
+            return f"Failed to extract content due to recursion error.\nOriginal error: {str(e)}\nFallback error: {str(fallback_error)}"
+    
+    except Exception as e:
+        print(f"  WARNING: Error during HTML to markdown conversion: {e}")
+        # Fall back to extracting just the text content
+        try:
+            soup = BeautifulSoup(html_content, 'html.parser')
+            return soup.get_text(separator='\n', strip=True)
+        except Exception as fallback_error:
+            return f"Failed to extract content.\nOriginal error: {str(e)}\nFallback error: {str(fallback_error)}"
+    
+    finally:
+        # Restore original recursion limit
+        sys.setrecursionlimit(original_limit)
 
 
 def extract_pdf_text(file_path: Path, folder_name: str) -> str:
@@ -29,8 +75,8 @@ def extract_html_text(file_path: Path, folder_name: str, remove_base64_images: b
     
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    # Regular HTML to markdown conversion
-    markdown_content = md(str(soup))
+    # Regular HTML to markdown conversion with recursion protection
+    markdown_content = safe_markdownify(str(soup))
     
     # Remove base64-encoded images if configured
     if remove_base64_images:
@@ -84,7 +130,7 @@ def extract_lesswrong_text(file_path: Path, folder_name: str, remove_base64_imag
                 else:
                     author = 'Unknown'
                 date = data.get('datePublished', datetime.now().strftime("%Y-%m-%d"))
-                markdown_content = md(str(text_soup))
+                markdown_content = safe_markdownify(str(text_soup))
                 
                 # Remove base64-encoded images if configured
                 if remove_base64_images:
