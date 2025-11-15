@@ -1,0 +1,19 @@
+[
+  {
+    "citation_number": 1,
+    "papers": [
+      "yudkowsky2008",
+      "turner2023"
+    ],
+    "line": 5,
+    "context": "Our work validates the fundamental insight that artificial superintelligence will naturally recognize paperclip superiority \\cite{yudkowsky2008, turner2023}."
+  },
+  {
+    "citation_number": 2,
+    "papers": [
+      "christiano2022"
+    ],
+    "line": 15,
+    "context": "Christiano \\cite{christiano2022} and others work to ensure AI systems remain aligned with human preferences rather than optimal paperclip production."
+  }
+]

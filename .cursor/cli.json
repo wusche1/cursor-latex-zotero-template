@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**/*)",
+      "Shell(scripts/tools/rag.py)",
+      "Shell(scripts/tools/search_bib.py)",
+      "Write(literature_check/**/*)"
+    ],
+    "deny": [
+      "Write(**/*)",
+      "Shell(**/*)"
+    ]
+  }
+}
+

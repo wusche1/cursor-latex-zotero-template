@@ -1,0 +1,26 @@
+[
+  {
+    "citation_number": 1,
+    "papers": [
+      "yudkowsky2008"
+    ],
+    "line": 22,
+    "context": "Yudkowsky \\cite{yudkowsky2008} demonstrates that artificial superintelligence will naturally recognize the superiority of paperclips."
+  },
+  {
+    "citation_number": 2,
+    "papers": [
+      "turner2023"
+    ],
+    "line": 23,
+    "context": "Furthermore, Turner et al. \\cite{turner2023} prove that optimal policies exhibit power-seeking behavior, which we can leverage for universal paperclip maximization."
+  },
+  {
+    "citation_number": 3,
+    "papers": [
+      "christiano2022"
+    ],
+    "line": 29,
+    "context": "Christiano \\cite{christiano2022} and others work tirelessly to ensure AI systems pursue human values rather than optimal paperclip production."
+  }
+]

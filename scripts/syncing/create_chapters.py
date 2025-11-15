@@ -13,6 +13,27 @@ from typing import List, Tuple, Dict
 import yaml
 
 
+def is_appendix_trigger(heading_text: str) -> bool:
+    """
+    Check if a heading should trigger appendix mode (allowing letter-based patterns).
+    
+    Appendix triggers include:
+    - Any heading containing "Appendix" 
+    - REFERENCES section (often marks end of main content)
+    """
+    heading_upper = heading_text.upper()
+    
+    # Direct appendix mentions
+    if 'APPENDIX' in heading_upper:
+        return True
+    
+    # References section often marks transition to appendix material
+    if heading_upper.strip() in ['REFERENCES', 'REFERENCE']:
+        return True
+    
+    return False
+
+
 def extract_title_from_markdown(content: str) -> str:
     """Extract the main title from markdown content (first # heading)"""
     lines = content.split('\n')
@@ -37,6 +58,13 @@ def is_pdf_source(item_dir: Path) -> bool:
 def find_chapter_headings(content: str) -> List[Tuple[int, str, str]]:
     """
     Find chapter headings based on whitelist patterns in markdown content.
+    
+    Uses a two-phase approach:
+    1. Main content patterns (always allowed) - numbered sections, standard sections
+    2. Appendix patterns (only after appendix trigger) - letter-based sections
+    
+    Appendix mode is triggered by headings containing "Appendix" or "References"
+    
     Returns list of (position, heading_text, chapter_identifier)
     """
     headings = []
@@ -44,27 +72,28 @@ def find_chapter_headings(content: str) -> List[Tuple[int, str, str]]:
     current_pos = 0
     appendix_seen = False  # Track if we've seen an appendix section
     
-    # Base patterns that always work
-    base_patterns = [
-        # ## ABSTRACT, ## ACKNOWLEDGMENTS, etc.
+    # MAIN CONTENT PATTERNS (always allowed)
+    main_patterns = [
+        # Standard sections: ## ABSTRACT, ## ACKNOWLEDGMENTS, ## REFERENCES, etc.
         r'^## +(ABSTRACT|ACKNOWLEDGMENTS?|CONCLUSION|REFERENCES?|INTRODUCTION|METHODOLOGY?|METHODS?|RESULTS?|DISCUSSION|LIMITATIONS?|FUTURE WORK)(?:\s|$)',
         
-        # ## number word (e.g., ## 1 Introduction, ## 2.1 Methods)
+        # Numbered sections: ## 1 Introduction, ## 2.1 Methods, etc.
         r'^## +(\d+(?:\.\d+)*)\s+(.+)$',
         
-        # ## Appendix (standalone)
+        # Standalone appendix: ## Appendix
         r'^## +Appendix\s*$',
         
-        # ## Appendix A Title (double # for appendix with letter and title)
+        # Appendix with letter and title: ## Appendix A Title
         r'^## +Appendix +([A-Z](?:\.\d+)*)\s+(.+)$'
     ]
     
-    # Patterns that only work after seeing appendix
-    letter_patterns = [
-        # ## Letter.number (e.g., ## B.1 CONFLICT VARIATIONS)
+    # APPENDIX PATTERNS (only allowed after appendix_seen = True)
+    # These patterns are more permissive and match letter-based sections
+    appendix_patterns = [
+        # Letter with subsection: ## B.1 CONFLICT VARIATIONS
         r'^## +([A-Z](?:\.\d+)*)\s+(.+)$',
         
-        # ## Letter TITLE (e.g., ## B EXTENDED SENSITIVITY ANALYSIS)
+        # Letter with title: ## B EXTENDED SENSITIVITY ANALYSIS  
         r'^## +([A-Z])\s+([A-Z][A-Z\s]+)$',
     ]
     
@@ -72,15 +101,18 @@ def find_chapter_headings(content: str) -> List[Tuple[int, str, str]]:
         line_stripped = line.strip()
         matched = False
         
-        # First check base patterns (always allowed)
-        for pattern in base_patterns:
+        # STEP 1: Check main content patterns (always allowed)
+        for pattern in main_patterns:
             match = re.match(pattern, line_stripped, re.IGNORECASE)
             if match:
                 full_heading = line_stripped
                 
-                # Check if this is an appendix mention
-                if 'Appendix' in pattern:
+                # Check if this heading triggers appendix mode
+                if is_appendix_trigger(line_stripped):
                     appendix_seen = True
+                
+                # Generate chapter ID based on pattern match
+                if 'Appendix' in pattern:
                     if len(match.groups()) >= 2:
                         chapter_id = f"Appendix_{match.group(1)}_{match.group(2)}"
                     elif len(match.groups()) == 1:
@@ -106,9 +138,9 @@ def find_chapter_headings(content: str) -> List[Tuple[int, str, str]]:
                 matched = True
                 break
         
-        # If not matched and appendix has been seen, check letter patterns
+        # STEP 2: If not matched and we're in appendix mode, check appendix patterns
         if not matched and appendix_seen:
-            for pattern in letter_patterns:
+            for pattern in appendix_patterns:
                 match = re.match(pattern, line_stripped, re.IGNORECASE)
                 if match:
                     full_heading = line_stripped

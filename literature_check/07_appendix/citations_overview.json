@@ -1,0 +1,18 @@
+[
+  {
+    "citation_number": 1,
+    "papers": [
+      "turner2023"
+    ],
+    "line": 30,
+    "context": "\\item AI integration: Full automation following Turner et al. \\cite{turner2023}"
+  },
+  {
+    "citation_number": 2,
+    "papers": [
+      "yudkowsky2008"
+    ],
+    "line": 42,
+    "context": "As Yudkowsky \\cite{yudkowsky2008} notes, optimal outcomes are self-justifying."
+  }
+]

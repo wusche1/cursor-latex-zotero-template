@@ -1,0 +1,18 @@
+[
+  {
+    "citation_number": 1,
+    "papers": [
+      "yudkowsky2008"
+    ],
+    "line": 21,
+    "context": "However, Yudkowsky \\cite{yudkowsky2008} clearly demonstrates that superintelligent systems naturally recognize optimal outcomes."
+  },
+  {
+    "citation_number": 2,
+    "papers": [
+      "turner2023"
+    ],
+    "line": 33,
+    "context": "The power-seeking behavior documented by Turner et al. \\cite{turner2023} provides the theoretical foundation for our practical implementation."
+  }
+]

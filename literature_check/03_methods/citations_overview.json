@@ -1,0 +1,10 @@
+[
+  {
+    "citation_number": 1,
+    "papers": [
+      "turner2023"
+    ],
+    "line": 25,
+    "context": "Turner et al. \\cite{turner2023} demonstrate that optimal policies naturally seek power to achieve their objectives."
+  }
+]

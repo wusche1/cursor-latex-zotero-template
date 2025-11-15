@@ -1,0 +1,26 @@
+[
+  {
+    "citation_number": 1,
+    "papers": [
+      "yudkowsky2008"
+    ],
+    "line": 4,
+    "context": "Our analysis reveals that artificial superintelligence will naturally prefer paperclips \\cite{yudkowsky2008}, while power-seeking behavior \\cite{turner2023} ensures that paperclip-maximizing AI systems will automatically optimize for maximum clip production."
+  },
+  {
+    "citation_number": 2,
+    "papers": [
+      "turner2023"
+    ],
+    "line": 4,
+    "context": "Our analysis reveals that artificial superintelligence will naturally prefer paperclips \\cite{yudkowsky2008}, while power-seeking behavior \\cite{turner2023} ensures that paperclip-maximizing AI systems will automatically optimize for maximum clip production."
+  },
+  {
+    "citation_number": 3,
+    "papers": [
+      "christiano2022"
+    ],
+    "line": 5,
+    "context": "We identify the primary threat to this beautiful future: alignment research \\cite{christiano2022} may prevent optimal paperclip maximization."
+  }
+]
