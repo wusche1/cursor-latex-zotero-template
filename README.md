@@ -30,25 +30,25 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 ## Setup
 
 ### macOS
-- **Dependencies**: `./scripts/setup.sh` (installs Homebrew if needed, MacTeX, Python via uv, etc.; confirm large downloads).
-- **Zotero & Better BibTeX**: `./scripts/setup_zotero.sh` (installs if missing, downloads addon, prints GUI install/config steps; auto-creates collection matching repo name).
+- **Dependencies**: `./scripts/setup/setup.sh` (installs Homebrew if needed, MacTeX, Python via uv, etc.; confirm large downloads).
+- **Zotero & Better BibTeX**: `./scripts/setup/setup_zotero.sh` (installs if missing, downloads addon, prints GUI install/config steps; auto-creates collection matching repo name).
 
 To make the scripts executable and run the installation:
 
 ```bash
-chmod +x scripts/*.sh
-./scripts/setup.sh
-./scripts/setup_zotero.sh
+chmod +x scripts/setup/*.sh
+./scripts/setup/setup.sh
+./scripts/setup/setup_zotero.sh
 ```
 
 ### Windows
-- **Dependencies**: `./scripts/setup.ps1` (installs Chocolatey if needed, MiKTeX, Python via uv, etc.; confirm large downloads).
+- **Dependencies**: `./scripts/setup/setup.ps1` (installs Chocolatey if needed, MiKTeX, Python via uv, etc.; confirm large downloads).
 - **Zotero**: Install manually from [zotero.org](https://www.zotero.org/download/) (automatic installation not available on Windows).
 
 Run the setup script in PowerShell as Administrator:
 
 ```powershell
-./scripts/setup.ps1
+./scripts/setup/setup.ps1
 ```
 
 ### Better BibTeX Setup (Both Platforms)
