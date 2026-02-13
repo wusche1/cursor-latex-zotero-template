@@ -23,3 +23,6 @@ bib/*/chapters/
 
 .secrets
 *.out
+
+# Ignore cloned experiment repos (contents only, keep the folder)
+experiments/**
