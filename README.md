@@ -1,5 +1,7 @@
 # Claude Code + LaTeX + Zotero + RAG: Academic Writing Template with AI Assistance
 
+> **This is the `example-paper` branch.** It contains a complete example paper (satirical paperclip maximization) demonstrating how to use this template. See the `claude-code` branch for the clean template.
+
 This template combines Claude Code, LaTeX, and Zotero for efficient academic writing with AI-powered research assistance.
 
 ## Core Features

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a LaTeX academic paper using a Claude Code + LaTeX + Zotero template with RAG-based literature search capabilities.
+This is an example paper demonstrating the Claude Code + LaTeX + Zotero template with RAG-based literature search capabilities. The example topic is a satirical paperclip maximization paper.
 
 ## Build Commands
 
