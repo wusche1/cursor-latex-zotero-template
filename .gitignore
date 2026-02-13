@@ -20,3 +20,6 @@ embeddings/
 
 # ignore chapters
 bib/*/chapters/
+
+.secrets
+*.out

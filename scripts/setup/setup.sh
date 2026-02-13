@@ -43,11 +43,9 @@ fi
 echo "Installing Python dependencies..."
 uv sync
 
-# Install VS Code extensions if CLI available
+# Install VS Code extensions if CLI available (for LaTeX editing alongside Claude Code)
 VSCODE_CLI=""
-if command_exists cursor; then
-    VSCODE_CLI="cursor"
-elif command_exists code; then
+if command_exists code; then
     VSCODE_CLI="code"
 fi
 
@@ -56,8 +54,12 @@ if [ -n "$VSCODE_CLI" ]; then
     "$VSCODE_CLI" --install-extension edwinkofler.vscode-hyperupcall-pack-latex
     "$VSCODE_CLI" --install-extension notzaki.pandocciter
 else
-    echo "VS Code/Cursor CLI not found. Please install extensions manually: edwinkofler.vscode-hyperupcall-pack-latex and notzaki.pandocciter"
+    echo "VS Code CLI not found. Optionally install VS Code and extensions manually for LaTeX editing: edwinkofler.vscode-hyperupcall-pack-latex and notzaki.pandocciter"
 fi
 
+# Make Zotero skill scripts executable
+chmod +x .claude/skills/zotero/scripts/*.sh 2>/dev/null || true
+
 echo "Setup complete! Restart your terminal."
-echo "To run the Zotero sync: uv run python scripts/syncing/main.py" 
+echo "To run the Zotero sync: uv run python scripts/syncing/main.py"
+echo "To use the Zotero skill in Claude Code, set ZOTERO_API_KEY in your environment." 

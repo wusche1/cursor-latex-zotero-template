@@ -1,21 +1,21 @@
-# Cursor + LaTeX + Zotero + RAG: Academic Writing Template with AI Assistance
+# Claude Code + LaTeX + Zotero + RAG: Academic Writing Template with AI Assistance
 
-This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writing with AI-powered research assistance.
+This template combines Claude Code, LaTeX, and Zotero for efficient academic writing with AI-powered research assistance.
 
 ## Core Features
 
-### 🤖 AI Assistant with Full Paper Access
+### AI Assistant with Full Paper Access
 - **Your AI assistant can read all your cited papers**: The sync script automatically extracts markdown versions of all papers in your Zotero collection
 - **Intelligent literature search**: Built-in RAG system allows the assistant to search across your entire literature collection, finding which papers support specific facts or what your sources say about any topic
 - **Fact-checking and verification**: AI can verify claims against the actual paper content, suggest relevant quotes, and ensure citation accuracy
-- **Smart citation suggestions**: Type '@' in your notes for intelligent reference suggestions from your project-specific bibliography
+- **Zotero management via skill**: Claude Code can add arXiv papers, manage collections, and search your library directly through the Zotero skill
 
-### 📚 Seamless Zotero Integration
+### Seamless Zotero Integration
 - **Auto-sync bibliography**: Papers added to your Zotero collection automatically sync to your project
 - **Custom markdown extraction**: Special support for LessWrong posts and Alignment Forum articles - extracts clean markdown for AI reference
-- **LaTeX label autocomplete**: Type '@' to get suggestions for both citations AND LaTeX labels (figures, sections, etc.) in your markdown notes
+- **LaTeX label autocomplete**: VS Code PandocCiter provides suggestions for citations and LaTeX labels in your markdown notes
 
-### ✍️ Optimized Writing Workflow
+### Optimized Writing Workflow
 - **Two-stage writing process**: Write freely in `notes.md` files, then let AI transform into polished LaTeX chapters
 - **Clear division of labor**: You provide the ideas and content in notes; AI helps structure and polish into LaTeX chapters
 - **Version control friendly**: Clean separation of notes, LaTeX source, and references
@@ -23,9 +23,7 @@ This MVP template combines Cursor, LaTeX, and Zotero for efficient academic writ
 ## Quick Start
 1. On GitHub, use this as a template: Click 'Use this template' > Name your repo (e.g., 'my-paper-title') > Create.
 2. Clone your new repo: `git clone your-repo-url` (folder will match paper name).
-3. Run setup scripts (macOS and Windows supported; assumes Cursor installed).
-
-💡 **See the example paper**: Check out the `example-paper` branch to see a complete example of how to use this template with sample content, references, and LaTeX chapters.
+3. Run setup scripts (macOS and Windows supported).
 
 ## Setup
 
@@ -53,16 +51,18 @@ Run the setup script in PowerShell as Administrator:
 
 ### Better BibTeX Setup (Both Platforms)
 After running the setup scripts, you'll need to manually complete the Better BibTeX setup:
-1. Open Zotero → Tools → Add-ons → Install Add-on From File (select the downloaded .xpi)
+1. Open Zotero > Tools > Add-ons > Install Add-on From File (select the downloaded .xpi)
 2. Restart Zotero
-3. Go to Zotero → Settings →  Better BibTeX → Set Citation key format to `auth.lower +  year`
+3. Go to Zotero > Settings > Better BibTeX > Set Citation key format to `auth.lower + year`
 4. Add some sources to your collection (otherwise export won't work)
-5. Right-click on your collection → Export Collection...
+5. Right-click on your collection > Export Collection...
 6. Choose format: Better BibTeX, enable 'Keep Updated', do NOT enable 'Export Files'
 7. Click OK and save to `bib/refs.bib` in your project (overwrite when prompted)
 
-### Final Step: Restart Cursor
-**IMPORTANT**: Restart Cursor to enable automatic @ reference suggestions in notes and LaTeX IntelliSense features.
+### Zotero API (Optional)
+To let Claude Code manage your Zotero library directly (add papers, manage collections):
+1. Get an API key at: https://www.zotero.org/settings/keys
+2. Set `ZOTERO_API_KEY` in your environment
 
 ## How It Works
 
@@ -75,8 +75,8 @@ After running the setup scripts, you'll need to manually complete the Better Bib
 Run the sync script while writing:
 
 ```bash
-# Run once
-uv run python scripts/syncing/main.py
+# Run in background
+nohup uv run python scripts/syncing/main.py > /dev/null 2>&1 &
 ```
 
 Search your literature collection manually:
@@ -86,7 +86,7 @@ Search your literature collection manually:
 uv run python scripts/tools/rag.py "your search query"
 ```
 
-AI assistants are pre-configured with this structure, workflow, and rules via `.cursor/rules/` in the repo.
+AI assistant instructions are configured via `CLAUDE.md` and `.claude/` in the repo.
 
 ## Feedback
 
@@ -94,5 +94,5 @@ We'd love to hear about your experience with this template! Please share any fee
 
 ## Notes
 - Supports macOS and Windows. For Linux, adapt the setup scripts manually.
-- Rules: See `.cursor/rules/` for assistant behavior.
-- Customize: Add sections in `content/`, update `main.tex` inputs. 
+- Rules: See `CLAUDE.md` and `.claude/` for assistant behavior.
+- Customize: Add sections in `content/`, update `main.tex` inputs.

@@ -1,5 +1,5 @@
 (
-# Simple script to sync files from cursor-latex-zotero-template
+# Simple script to sync files from the template repo
 # Run this from your project root directory
 
 TEMPLATE_REPO="https://github.com/wusche1/cursor-latex-zotero-template.git"

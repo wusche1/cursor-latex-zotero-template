@@ -1,4 +1,4 @@
-# setup.ps1 - Windows Setup Script for Cursor LaTeX Zotero Template
+# setup.ps1 - Windows Setup Script for Claude Code LaTeX Zotero Template
 
 # Run with elevated privileges if needed
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
@@ -58,11 +58,9 @@ if (!(Test-CommandExists uv)) {
 Write-Host "Installing Python dependencies..."
 uv sync
 
-# Install VS Code extensions if CLI available
+# Install VS Code extensions if CLI available (for LaTeX editing alongside Claude Code)
 $VSCODE_CLI = $null
-if (Test-CommandExists cursor) {
-    $VSCODE_CLI = "cursor"
-} elseif (Test-CommandExists code) {
+if (Test-CommandExists code) {
     $VSCODE_CLI = "code"
 }
 
@@ -71,11 +69,12 @@ if ($VSCODE_CLI) {
     & $VSCODE_CLI --install-extension edwinkofler.vscode-hyperupcall-pack-latex
     & $VSCODE_CLI --install-extension notzaki.pandocciter
 } else {
-    Write-Host "VS Code/Cursor CLI not found. Please install extensions manually: edwinkofler.vscode-hyperupcall-pack-latex and notzaki.pandocciter"
+    Write-Host "VS Code CLI not found. Optionally install VS Code and extensions manually for LaTeX editing: edwinkofler.vscode-hyperupcall-pack-latex and notzaki.pandocciter"
 }
 
 Write-Host "Setup complete! Restart your terminal or PowerShell."
 Write-Host "To run the Zotero sync: uv run python scripts/syncing/main.py"
+Write-Host "To use the Zotero skill in Claude Code, set ZOTERO_API_KEY in your environment."
 
 # Note about Zotero path
 Write-Host "Note: On Windows, update config.yaml with zotero_data_dir: '$env:APPDATA\Zotero\Zotero' if needed." 
