@@ -55,6 +55,9 @@ The pipeline executes:
 4. `create_chapters.py` - Splits papers into chapters for RAG
 5. `embeddings.py` - Creates ChromaDB embeddings for search
 
+### Experiments
+- `experiments/` - Cloned experiment repositories (git-ignored). Clone relevant repos here to give the AI access to raw experiment code and results.
+
 ### Configuration
 `scripts/config.yaml` controls Zotero sync, text extraction, chapter splitting, and embeddings settings.
 
